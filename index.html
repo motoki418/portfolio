@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中村元揮 | 札幌のWeb制作・AI業務改善</title>
+<meta name="description" content="札幌でホームページ制作・Web予約・AI業務改善をワンストップ対応。クリニック・飲食店・整骨院など地域密着型ビジネスに特化。最短1週間納品、月額1万円〜の保守サポート。">
+<meta property="og:title" content="中村元揮 | 札幌のWeb制作・AI業務改善">
+<meta property="og:description" content="札幌でホームページ制作・Web予約・AI業務改善をワンストップ対応。クリニック・飲食店・整骨院など地域密着型ビジネスに特化。最短1週間納品。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="中村元揮 | 札幌のWeb制作・AI業務改善">
+<meta name="twitter:description" content="札幌でホームページ制作・Web予約・AI業務改善をワンストップ対応。クリニック・飲食店・整骨院など地域密着型ビジネスに特化。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #0f172a;
+  --ink-soft: #334155;
+  --ink-muted: #64748b;
+  --ink-faint: #94a3b8;
+  --surface: #ffffff;
+  --surface-warm: #faf9f7;
+  --surface-elevated: #f1f0ed;
+  --accent: #2563eb;
+  --accent-glow: rgba(37, 99, 235, 0.12);
+  --accent-hover: #1d4ed8;
+  --warm: #d97706;
+  --border: #e2e0dc;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow-card: 0 1px 3px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.03);
+  --shadow-hover: 0 8px 30px rgba(15,23,42,0.08);
+  --font-body: "Noto Sans JP", sans-serif;
+  --font-display: "Sora", "Noto Sans JP", sans-serif;
+  --max-w: 1100px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--ink-soft);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: var(--accent); text-decoration: none; transition: color 0.2s var(--ease); }
+a:hover { color: var(--accent-hover); }
+img { max-width: 100%; height: auto; display: block; }
+
+/* --- Utility --- */
+.container { max-width: var(--max-w); margin: 0 auto; padding: 0 28px; }
+section { padding: 100px 0; }
+@media (max-width: 768px) { section { padding: 64px 0; } .container { padding: 0 20px; } }
+
+.section-label {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 16px;
+}
+.section-lead {
+  font-size: 15px;
+  color: var(--ink-muted);
+  max-width: 540px;
+  line-height: 1.8;
+  margin-bottom: 52px;
+}
+.text-center { text-align: center; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+@media (max-width: 768px) {
+  .section-title { font-size: 26px; }
+  .section-lead { margin-bottom: 36px; }
+}
+
+/* --- Grain overlay --- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px;
+}
+
+/* --- Header --- */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.header.scrolled { border-bottom-color: var(--border); box-shadow: 0 1px 8px rgba(15,23,42,0.04); }
+.header-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between; height: 64px;
+}
+.header-logo {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 700; color: var(--ink);
+  letter-spacing: 0.02em;
+}
+.header-nav { display: flex; align-items: center; gap: 32px; }
+.header-nav a { font-size: 13px; color: var(--ink-muted); font-weight: 500; letter-spacing: 0.01em; transition: color 0.2s; }
+.header-nav a:hover { color: var(--ink); }
+.nav-cta {
+  display: inline-block; padding: 9px 22px;
+  background: var(--ink); color: #fff !important;
+  border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+  transition: background 0.2s, transform 0.2s;
+}
+.nav-cta:hover { background: #1e293b; transform: translateY(-1px); }
+
+.hamburger {
+  display: none; background: none; border: none; cursor: pointer; padding: 4px;
+  width: 32px; height: 32px; flex-direction: column; justify-content: center; align-items: center; gap: 5px;
+}
+.hamburger span { display: block; width: 20px; height: 1.5px; background: var(--ink); transition: transform 0.25s, opacity 0.25s; }
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+@media (max-width: 768px) {
+  .hamburger { display: flex; }
+  .header-nav {
+    position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.98); backdrop-filter: blur(16px);
+    flex-direction: column; justify-content: flex-start; padding-top: 40px; gap: 0;
+    transform: translateX(100%); transition: transform 0.35s var(--ease);
+  }
+  .header-nav.open { transform: translateX(0); }
+  .header-nav a { font-size: 17px; padding: 16px 0; }
+  .nav-cta { margin-top: 16px; font-size: 15px; padding: 14px 32px; }
+}
+
+/* --- Hero --- */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center;
+  padding-top: 64px;
+  position: relative; overflow: hidden;
+  background: var(--surface-warm);
+}
+.hero::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 700px 500px at 10% 80%, var(--accent-glow), transparent),
+    radial-gradient(ellipse 500px 500px at 90% 10%, rgba(217,119,6,0.07), transparent);
+  pointer-events: none;
+}
+.hero-inner {
+  max-width: var(--max-w); margin: 0 auto; padding: 0 28px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; gap: 64px;
+  width: 100%;
+  position: relative; z-index: 1;
+}
+.hero-content { padding: 0; }
+.hero-label {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 24px;
+  padding: 6px 16px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+.hero-name {
+  font-family: var(--font-display);
+  font-size: 56px; font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.hero-name-en {
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 400;
+  color: var(--ink-faint);
+  letter-spacing: 0.16em;
+  margin-bottom: 28px;
+}
+.hero-title {
+  font-size: 17px; font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 16px;
+  letter-spacing: 0.04em;
+}
+.hero-sub {
+  font-size: 15.5px; color: var(--ink-muted);
+  margin-bottom: 44px; line-height: 1.85;
+}
+.btn-primary {
+  display: inline-block; padding: 16px 40px;
+  background: var(--accent); color: #fff; font-size: 14.5px; font-weight: 600;
+  border-radius: var(--radius-sm); border: none; cursor: pointer;
+  transition: all 0.25s var(--ease);
+  box-shadow: 0 4px 14px rgba(37,99,235,0.2);
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover {
+  background: var(--accent-hover); color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.28);
+}
+.btn-secondary-link {
+  display: inline-block; margin-top: 14px;
+  font-size: 13px; color: var(--ink-muted); font-weight: 500;
+  text-decoration: none; letter-spacing: 0.01em;
+  transition: color 0.2s;
+}
+.btn-secondary-link:hover { color: var(--ink); }
+
+/* --- Hero mockup --- */
+.hero-visual { position: relative; }
+.mockup-browser {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgba(15,23,42,0.13), 0 4px 16px rgba(15,23,42,0.06);
+  overflow: hidden;
+  transform: perspective(900px) rotateY(-6deg) rotateX(2deg);
+  transition: transform 0.5s var(--ease);
+}
+.mockup-browser:hover { transform: perspective(900px) rotateY(-2deg) rotateX(1deg); }
+.mockup-bar {
+  background: #f1f0ed;
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid #e2e0dc;
+}
+.mockup-dots { display: flex; gap: 6px; }
+.mockup-dots span {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.mockup-dots span:nth-child(1) { background: #fc615d; }
+.mockup-dots span:nth-child(2) { background: #fdbc40; }
+.mockup-dots span:nth-child(3) { background: #34c749; }
+.mockup-url {
+  flex: 1; background: #fff; border-radius: 6px;
+  padding: 4px 10px; font-size: 11px;
+  color: var(--ink-faint); font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+.mockup-screen {
+  height: 320px; overflow: hidden;
+  background: linear-gradient(160deg, #1e3a5f 0%, #2563eb 60%, #1d4ed8 100%);
+  position: relative;
+}
+.mockup-screen-inner {
+  padding: 28px 24px;
+  color: #fff;
+}
+.ms-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 28px;
+}
+.ms-logo { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; opacity: 0.95; }
+.ms-links { display: flex; gap: 14px; }
+.ms-links span { font-size: 9px; opacity: 0.6; }
+.ms-hero-text { margin-bottom: 20px; }
+.ms-hero-text h2 { font-size: 20px; font-weight: 800; line-height: 1.3; margin-bottom: 6px; }
+.ms-hero-text p { font-size: 10px; opacity: 0.75; line-height: 1.6; }
+.ms-btn {
+  display: inline-block; padding: 7px 18px;
+  background: #fff; color: #2563eb;
+  border-radius: 6px; font-size: 10px; font-weight: 700;
+  margin-bottom: 24px;
+}
+.ms-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.ms-card {
+  background: rgba(255,255,255,0.12);
+  border-radius: 8px; padding: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.ms-card-icon { font-size: 14px; margin-bottom: 4px; }
+.ms-card-title { font-size: 8px; font-weight: 700; margin-bottom: 2px; }
+.ms-card-line { height: 2px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-bottom: 2px; }
+.ms-card-line.short { width: 60%; }
+.hero-badge {
+  position: absolute; bottom: -16px; right: -16px;
+  background: #fff; border-radius: 12px;
+  padding: 12px 18px;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.12);
+  display: flex; align-items: center; gap: 10px;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.hero-badge-icon { font-size: 20px; }
+.hero-badge-text { font-size: 11px; color: var(--ink); line-height: 1.4; }
+.hero-badge-text strong { display: block; font-size: 13px; font-weight: 700; }
+
+.hero-badge2 {
+  position: absolute; top: 20px; left: -20px;
+  background: #fff; border-radius: 12px;
+  padding: 10px 16px;
+  box-shadow: 0 8px 32px rgba(15,23,42,0.1);
+  display: flex; align-items: center; gap: 8px;
+  animation: float 3s ease-in-out infinite 1.5s;
+}
+.hero-badge2-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+}
+.hero-badge2-text { font-size: 11px; color: var(--ink); font-weight: 600; }
+
+@media (max-width: 960px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+  .hero-visual { display: none; }
+}
+@media (max-width: 768px) {
+  .hero-name { font-size: 38px; }
+  .hero-title { font-size: 15px; }
+  .btn-primary { padding: 14px 32px; font-size: 14px; }
+}
+
+/* --- Problems --- */
+.problems-section { background: var(--surface); }
+.problems-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 28px; }
+@media (max-width: 768px) { .problems-grid { grid-template-columns: 1fr; gap: 14px; } }
+.problem-card {
+  display: flex; align-items: flex-start; gap: 18px;
+  padding: 24px 28px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.problem-card:hover { box-shadow: var(--shadow-card); transform: translateY(-2px); }
+.problem-num {
+  flex-shrink: 0;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.problem-text { font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.55; margin-bottom: 4px; }
+.problem-sub { font-size: 13px; color: var(--ink-faint); line-height: 1.6; }
+.problems-footer {
+  text-align: center; font-size: 13.5px; color: var(--ink-muted);
+  padding: 16px 24px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-warm);
+  border: 1px solid var(--border);
+}
+
+/* --- Services --- */
+.services-section { background: var(--surface-warm); }
+.services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; gap: 16px; } }
+.service-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 36px 28px;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+  position: relative;
+}
+.service-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+.service-card::before {
+  content: ""; position: absolute; top: 0; left: 28px; right: 28px; height: 3px;
+  border-radius: 0 0 3px 3px;
+}
+.service-card:nth-child(1)::before { background: var(--accent); }
+.service-card:nth-child(2)::before { background: var(--warm); }
+.service-card:nth-child(3)::before { background: #059669; }
+.service-num {
+  font-family: var(--font-display);
+  font-size: 72px; font-weight: 900;
+  line-height: 1; margin-bottom: -8px;
+  letter-spacing: -0.04em;
+}
+.service-card:nth-child(1) .service-num { color: rgba(37,99,235,0.12); }
+.service-card:nth-child(2) .service-num { color: rgba(217,119,6,0.12); }
+.service-card:nth-child(3) .service-num { color: rgba(5,150,105,0.12); }
+.service-card h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 14px; }
+.service-card p { font-size: 14px; color: var(--ink-muted); line-height: 1.85; }
+
+/* --- Portfolio --- */
+.portfolio-section { background: var(--surface); }
+.portfolio-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+@media (max-width: 768px) { .portfolio-grid { grid-template-columns: 1fr; gap: 16px; } }
+.portfolio-card {
+  border-radius: var(--radius); overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border);
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.portfolio-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-4px); }
+.portfolio-thumb {
+  width: 100%; height: 210px; position: relative;
+  display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+  overflow: hidden;
+}
+.portfolio-thumb--clinic { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); }
+.portfolio-thumb--restaurant { background: linear-gradient(135deg, #78350f 0%, #d97706 100%); }
+.portfolio-thumb--bonesetter { background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%); }
+.pt-bar {
+  background: rgba(0,0,0,0.2); padding: 7px 12px;
+  display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.pt-dots { display: flex; gap: 4px; }
+.pt-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+.pt-url {
+  background: rgba(255,255,255,0.15); border-radius: 4px;
+  padding: 2px 10px; font-size: 9px; color: rgba(255,255,255,0.6);
+  flex: 1; font-family: var(--font-display); letter-spacing: 0.01em;
+}
+.pt-body {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  padding: 20px 20px 16px;
+}
+.pt-title {
+  font-size: 18px; font-weight: 800; color: #fff;
+  line-height: 1.4; margin-bottom: 16px;
+}
+.pt-btn {
+  display: inline-block; background: #fff;
+  font-size: 9px; font-weight: 700;
+  padding: 6px 14px; border-radius: 5px; width: fit-content;
+}
+.portfolio-body { padding: 24px 24px 28px; }
+.portfolio-body h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.portfolio-body p { font-size: 13.5px; color: var(--ink-muted); line-height: 1.75; margin-bottom: 16px; }
+.portfolio-link {
+  font-family: var(--font-display);
+  font-size: 13px; font-weight: 600; color: var(--accent);
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: gap 0.25s var(--ease);
+}
+.portfolio-link:hover { gap: 10px; }
+
+/* --- Pricing --- */
+.pricing-section { background: var(--surface-warm); }
+.pricing-scarcity {
+  display: inline-block;
+  font-size: 13.5px; font-weight: 600; color: var(--warm);
+  padding: 8px 20px;
+  background: rgba(217,119,6,0.08);
+  border: 1px solid rgba(217,119,6,0.15);
+  border-radius: 100px;
+  margin-bottom: 52px;
+}
+
+/* Pricing cards */
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 980px;
+  margin: 0 auto 72px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .pricing-cards { grid-template-columns: 1fr; max-width: 480px; }
+}
+.pricing-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  position: relative;
+  transition: box-shadow 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.pricing-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.pricing-card--featured {
+  border-color: var(--accent);
+  border-width: 2px;
+  box-shadow: 0 12px 40px rgba(37,99,235,0.13);
+  transform: translateY(-10px);
+}
+.pricing-card--featured:hover { transform: translateY(-13px); box-shadow: 0 20px 50px rgba(37,99,235,0.17); }
+.pricing-badge {
+  position: absolute;
+  top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 18px; border-radius: 100px;
+  white-space: nowrap; letter-spacing: 0.05em;
+}
+.pricing-plan-label {
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  margin-bottom: 18px;
+}
+.pricing-card--featured .pricing-plan-label { color: var(--accent); }
+.pricing-amount {
+  display: flex; align-items: baseline; gap: 4px;
+  margin-bottom: 2px;
+}
+.pricing-amount-num {
+  font-family: var(--font-display);
+  font-size: 48px; font-weight: 900;
+  color: var(--ink); letter-spacing: -0.04em; line-height: 1;
+}
+.pricing-amount-unit { font-size: 15px; color: var(--ink-muted); font-weight: 600; }
+.pricing-monthly {
+  font-size: 13px; color: var(--ink-faint);
+  margin-bottom: 24px;
+}
+.pricing-monthly strong { color: var(--ink-soft); font-weight: 700; }
+.pricing-divider { height: 1px; background: var(--border); margin: 0 0 22px; }
+.pricing-features {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 9px;
+  margin-bottom: 28px;
+}
+.pricing-features li {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 13.5px; color: var(--ink-soft); line-height: 1.5;
+}
+.feat-icon {
+  flex-shrink: 0; margin-top: 1px;
+  width: 17px; height: 17px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 900;
+}
+.feat-check { background: rgba(37,99,235,0.1); color: var(--accent); }
+.feat-check-green { background: rgba(5,150,105,0.1); color: #059669; }
+.feat-none { background: var(--surface-elevated); color: var(--ink-faint); font-size: 11px; }
+.pricing-cta {
+  display: block; width: 100%; padding: 13px;
+  text-align: center; border-radius: var(--radius-sm);
+  font-size: 14px; font-weight: 600;
+  transition: all 0.25s var(--ease);
+}
+.pricing-cta--primary {
+  background: var(--accent); color: #fff;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.22);
+}
+.pricing-cta--primary:hover { background: var(--accent-hover); color: #fff; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+.pricing-cta--outline {
+  background: transparent; color: var(--ink);
+  border: 1.5px solid var(--border);
+}
+.pricing-cta--outline:hover { border-color: var(--ink-muted); background: var(--surface-warm); color: var(--ink); }
+
+/* Compare table */
+.compare-section { max-width: 980px; margin: 0 auto; }
+.compare-title {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 17px; font-weight: 700; color: var(--ink);
+  margin-bottom: 20px; letter-spacing: -0.01em;
+}
+.compare-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+}
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.compare-table thead th {
+  padding: 16px 20px; text-align: center;
+  font-family: var(--font-display);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-muted);
+  background: var(--surface-warm);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th:first-child { text-align: left; }
+.compare-table thead th.th-std {
+  background: rgba(37,99,235,0.05); color: var(--accent);
+  border-left: 1px solid rgba(37,99,235,0.15);
+  border-right: 1px solid rgba(37,99,235,0.15);
+}
+.compare-table tbody td {
+  padding: 13px 20px; text-align: center;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink-soft); font-size: 13.5px;
+}
+.compare-table tbody td:first-child {
+  text-align: left; font-weight: 600; color: var(--ink);
+  background: var(--surface-warm);
+}
+.compare-table tbody tr:last-child td { border-bottom: none; }
+.compare-table tbody td.td-std {
+  background: rgba(37,99,235,0.03);
+  border-left: 1px solid rgba(37,99,235,0.15);
+  border-right: 1px solid rgba(37,99,235,0.15);
+}
+.compare-table tbody tr:hover td { background: rgba(15,23,42,0.018); }
+.compare-table tbody tr:hover td.td-std { background: rgba(37,99,235,0.05); }
+.ct-check { color: var(--accent); font-size: 15px; font-weight: 800; }
+.ct-check-green { color: #059669; font-size: 15px; font-weight: 800; }
+.ct-dash { color: var(--border); font-size: 18px; }
+.ct-price { font-weight: 800; color: var(--ink); font-family: var(--font-display); font-size: 15px; }
+.ct-sub { font-size: 11px; color: var(--ink-faint); display: block; margin-top: 2px; }
+
+.pricing-note { text-align: center; font-size: 13px; color: var(--ink-faint); max-width: 640px; margin: 24px auto 0; line-height: 1.75; }
+.pricing-bottom-cta { text-align: center; margin-top: 36px; }
+@media (max-width: 768px) {
+  .compare-table { font-size: 12px; }
+  .compare-table thead th, .compare-table tbody td { padding: 10px 12px; }
+}
+
+/* --- KPI Strip --- */
+.kpi-strip {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+}
+.kpi-inner {
+  max-width: var(--max-w); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+}
+.kpi-item {
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+}
+.kpi-item + .kpi-item::before {
+  content: "";
+  position: absolute; left: 0; top: 24px; bottom: 24px;
+  width: 1px; background: var(--border);
+}
+.kpi-num {
+  font-family: var(--font-display);
+  font-size: 40px; font-weight: 900;
+  color: var(--ink); letter-spacing: -0.04em;
+  line-height: 1; margin-bottom: 4px;
+  display: flex; align-items: baseline; justify-content: center; gap: 3px;
+}
+.kpi-num-unit {
+  font-size: 16px; font-weight: 700; color: var(--ink-muted); letter-spacing: 0;
+}
+.kpi-label {
+  font-size: 12px; color: var(--ink-faint);
+  letter-spacing: 0.04em; line-height: 1.5;
+}
+@media (max-width: 768px) {
+  .kpi-inner { grid-template-columns: repeat(3, 1fr); }
+  .kpi-num { font-size: 28px; }
+  .kpi-item { padding: 24px 12px; }
+}
+
+/* --- Track Record --- */
+.track-section { background: var(--surface); }
+.track-record-card {
+  max-width: 640px; margin: 0 auto;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 36px;
+  position: relative;
+}
+.track-record-card::before {
+  content: ""; position: absolute; top: 0; left: 36px; right: 36px; height: 3px;
+  background: var(--warm); border-radius: 0 0 3px 3px;
+}
+.track-record-card h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.track-year { font-size: 12.5px; color: var(--ink-faint); margin-bottom: 14px; letter-spacing: 0.04em; }
+.track-record-card p { font-size: 14px; color: var(--ink-muted); line-height: 1.85; }
+#portfolio-yuu {
+  margin-top: 20px; padding: 12px 16px;
+  background: var(--surface-elevated); border-radius: var(--radius-sm);
+  font-size: 13px; color: var(--ink-muted);
+  display: flex; align-items: center; gap: 8px;
+}
+.track-status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--warm); flex-shrink: 0;
+}
+
+/* --- Profile --- */
+.profile-section { background: var(--surface-warm); }
+.profile-inner { display: flex; align-items: flex-start; gap: 44px; max-width: 720px; margin: 0 auto; }
+.profile-photo {
+  flex-shrink: 0; width: 108px; height: 108px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ink) 0%, #334155 100%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-family: var(--font-display);
+  font-size: 30px; font-weight: 700; letter-spacing: 0.04em;
+  box-shadow: 0 4px 20px rgba(15,23,42,0.12);
+}
+.profile-text h3 { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.profile-name-en {
+  font-family: var(--font-display);
+  font-size: 12px; color: var(--ink-faint); margin-bottom: 20px; letter-spacing: 0.1em;
+}
+.profile-text p { font-size: 15px; color: var(--ink-muted); line-height: 1.9; margin-bottom: 12px; }
+@media (max-width: 768px) {
+  .profile-inner { flex-direction: column; align-items: center; text-align: center; gap: 24px; }
+}
+
+/* --- Contact --- */
+.contact-section {
+  background: var(--ink);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.contact-section::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 600px 400px at 70% 50%, rgba(37,99,235,0.12), transparent);
+  pointer-events: none;
+}
+.contact-inner { text-align: center; max-width: 560px; margin: 0 auto; position: relative; z-index: 1; }
+.contact-main-cta { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.4; }
+.contact-sub { font-size: 14.5px; color: #94a3b8; margin-bottom: 40px; line-height: 1.8; }
+.contact-links { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.contact-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 15px 36px; border-radius: var(--radius-sm);
+  font-size: 14.5px; font-weight: 600; min-width: 300px;
+  transition: all 0.25s var(--ease);
+}
+.contact-btn--email {
+  background: var(--accent); color: #fff;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+}
+.contact-btn--email:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.4); }
+.contact-btn--outline { background: rgba(255,255,255,0.06); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.12); }
+.contact-btn--outline:hover { background: rgba(255,255,255,0.1); color: #fff; transform: translateY(-1px); }
+.contact-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+@media (max-width: 768px) {
+  .contact-main-cta { font-size: 21px; }
+  .contact-btn { min-width: 260px; font-size: 14px; padding: 13px 28px; }
+}
+
+/* --- Footer --- */
+.footer {
+  text-align: center; padding: 28px 24px;
+  font-size: 12px; color: var(--ink-faint);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* --- CTA button (reusable) --- */
+.cta-button {
+  display: inline-block; padding: 14px 36px;
+  background: var(--accent); color: #fff; font-size: 14px; font-weight: 600;
+  border-radius: var(--radius-sm); transition: all 0.25s var(--ease);
+  box-shadow: 0 4px 14px rgba(37,99,235,0.2);
+}
+.cta-button:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.28); }
+
+/* --- Animations --- */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header" id="header">
+  <div class="header-inner">
+    <a href="#hero" class="header-logo">中村元揮</a>
+    <button class="hamburger" id="hamburger" aria-label="メニュー"><span></span><span></span><span></span></button>
+    <nav class="header-nav" id="nav">
+      <a href="#services">できること</a>
+      <a href="#portfolio">制作サンプル</a>
+      <a href="#pricing">料金</a>
+      <a href="#profile">プロフィール</a>
+      <a href="#contact" class="nav-cta">お問い合わせ</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <span class="hero-label">Sapporo / Web & AI</span>
+      <h1 class="hero-name">中村元揮</h1>
+      <p class="hero-name-en">Motoki Nakamura</p>
+      <p class="hero-title">予約電話を減らし、新患・新規客を増やす</p>
+      <p class="hero-sub">予約電話の対応、サイトの更新、手作業の繰り返し——その時間、本業に使えていますか？ホームページ・Web予約・AI業務効率化まで、最短1週間で丸ごとサポートします。</p>
+      <a href="#contact" class="btn-primary">御社専用のデモサイトを無料でお作りします</a>
+      <a href="#pricing" class="btn-secondary-link">まず料金だけ確認する →</a>
+    </div>
+    <div class="hero-visual">
+      <div class="mockup-browser">
+        <div class="mockup-bar">
+          <div class="mockup-dots"><span></span><span></span><span></span></div>
+          <div class="mockup-url">sample-clinic-aoba.vercel.app</div>
+        </div>
+        <div class="mockup-screen">
+          <div class="mockup-screen-inner">
+            <div class="ms-nav">
+              <div class="ms-logo">あおば内科クリニック</div>
+              <div class="ms-links"><span>診療案内</span><span>アクセス</span><span>予約</span></div>
+            </div>
+            <div class="ms-hero-text">
+              <h2>あなたの健康を、<br>地域で支える</h2>
+              <p>内科・生活習慣病・健康診断<br>月〜土曜日 9:00〜18:00</p>
+            </div>
+            <div class="ms-btn">Web予約はこちら →</div>
+            <div class="ms-cards">
+              <div class="ms-card">
+                <div class="ms-card-icon">🏥</div>
+                <div class="ms-card-title">内科</div>
+                <div class="ms-card-line"></div>
+                <div class="ms-card-line short"></div>
+              </div>
+              <div class="ms-card">
+                <div class="ms-card-icon">💊</div>
+                <div class="ms-card-title">処方箋</div>
+                <div class="ms-card-line"></div>
+                <div class="ms-card-line short"></div>
+              </div>
+              <div class="ms-card">
+                <div class="ms-card-icon">📋</div>
+                <div class="ms-card-title">健康診断</div>
+                <div class="ms-card-line"></div>
+                <div class="ms-card-line short"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-badge">
+        <div class="hero-badge-icon">⚡</div>
+        <div class="hero-badge-text"><strong>最短1週間</strong>で納品</div>
+      </div>
+      <div class="hero-badge2">
+        <div class="hero-badge2-dot"></div>
+        <div class="hero-badge2-text">無料デモ作成中</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KPI Strip -->
+<div class="kpi-strip">
+  <div class="kpi-inner">
+    <div class="kpi-item reveal">
+      <div class="kpi-num"><span class="kpi-count" data-target="7">7</span><span class="kpi-num-unit">日〜</span></div>
+      <div class="kpi-label">最短納品日数</div>
+    </div>
+    <div class="kpi-item reveal reveal-delay-1">
+      <div class="kpi-num">¥<span class="kpi-count" data-target="10000" style="font-size:30px">10,000</span><span class="kpi-num-unit">/月〜</span></div>
+      <div class="kpi-label">月額料金<br><span style="font-size:10px; letter-spacing:0.02em;">修正・管理・サポート込み</span></div>
+    </div>
+    <div class="kpi-item reveal reveal-delay-2">
+      <div class="kpi-num"><span class="kpi-count" data-target="24">24</span><span class="kpi-num-unit">h</span></div>
+      <div class="kpi-label">以内にご返信</div>
+    </div>
+  </div>
+</div>
+
+<!-- Problems -->
+<section class="problems-section" id="problems">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">Problems</span>
+      <h2 class="section-title reveal">こんなお悩みありませんか？</h2>
+    </div>
+    <p class="section-lead text-center mx-auto reveal">一つでも当てはまれば、お力になれるかもしれません。</p>
+    <div class="problems-grid">
+      <div class="problem-card reveal">
+        <div class="problem-num">01</div>
+        <div>
+          <p class="problem-text">サイトが古くてスマホで見づらい</p>
+          <p class="problem-sub">患者・お客様の7割はスマホで検索しています</p>
+        </div>
+      </div>
+      <div class="problem-card reveal reveal-delay-1">
+        <div class="problem-num">02</div>
+        <div>
+          <p class="problem-text">予約の電話対応に時間を取られる</p>
+          <p class="problem-sub">1日10件の予約電話なら、対応だけで毎日1時間近く消えています</p>
+        </div>
+      </div>
+      <div class="problem-card reveal reveal-delay-2">
+        <div class="problem-num">03</div>
+        <div>
+          <p class="problem-text">更新のたびに制作会社にお金がかかる</p>
+          <p class="problem-sub">修正依頼1回あたり5,000〜2万円が相場。年間で数十万になることも</p>
+        </div>
+      </div>
+      <div class="problem-card reveal reveal-delay-3">
+        <div class="problem-num">04</div>
+        <div>
+          <p class="problem-text">毎日の繰り返し作業で、やりたい仕事が後回しになる</p>
+          <p class="problem-sub">予約台帳・顧客管理・データ入力など、自動化すると週5〜10時間の削減も珍しくありません</p>
+        </div>
+      </div>
+    </div>
+    <div class="problems-footer reveal">クリニック・飲食店・接骨院など、地域密着型ビジネスに特化しています</div>
+  </div>
+</section>
+
+<!-- Services -->
+<section class="services-section" id="services">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">Services</span>
+      <h2 class="section-title reveal">できること</h2>
+    </div>
+    <p class="section-lead text-center mx-auto reveal">課題に合わせて、最適なプランをご提案します</p>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <h3>ホームページ制作</h3>
+        <p>レスポンシブデザイン・予約導線設計・Googleマップ連携。スマホでも見やすく、患者・お客様が迷わず予約できるサイトを制作します。</p>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-num">02</div>
+        <h3>業務システム開発</h3>
+        <p>予約管理・顧客管理・売上管理など、御社の業務に合わせたシステムを構築。手作業を減らし、本業に集中できる環境を作ります。</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-num">03</div>
+        <h3>AI業務改善</h3>
+        <p>既存の業務フローにAIを組み込み、メール対応・データ整理・レポート作成などを効率化。「何から始めればいいかわからない」という段階からサポートします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio -->
+<section class="portfolio-section" id="portfolio">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">Works</span>
+      <h2 class="section-title reveal">制作サンプル</h2>
+    </div>
+    <p class="section-lead text-center mx-auto reveal">実際のデモサイトをご覧いただけます</p>
+    <div class="portfolio-grid">
+      <div class="portfolio-card reveal">
+        <div class="portfolio-thumb portfolio-thumb--clinic">
+          <div class="pt-bar"><div class="pt-dots"><span></span><span></span><span></span></div><div class="pt-url">sample-clinic-aoba.vercel.app</div></div>
+          <div class="pt-body">
+            <div class="pt-title">あなたの健康を、<br>地域で支える</div>
+            <div class="pt-btn" style="color:#2563eb;">Web予約はこちら →</div>
+          </div>
+        </div>
+        <div class="portfolio-body">
+          <h3>あおば内科クリニック</h3>
+          <p>内科クリニック向けサンプル。Web予約導線・診療案内・アクセスマップを備えたレスポンシブデザイン。</p>
+          <a href="https://sample-clinic-aoba.vercel.app" target="_blank" class="portfolio-link">サイトを見る <span>&rarr;</span></a>
+        </div>
+      </div>
+      <div class="portfolio-card reveal reveal-delay-1">
+        <div class="portfolio-thumb portfolio-thumb--restaurant">
+          <div class="pt-bar"><div class="pt-dots"><span></span><span></span><span></span></div><div class="pt-url">sample-restaurant-daichi.vercel.app</div></div>
+          <div class="pt-body">
+            <div class="pt-title">炭火の香りと、<br>素材の旨みを</div>
+            <div class="pt-btn" style="color:#d97706;">席を予約する →</div>
+          </div>
+        </div>
+        <div class="portfolio-body">
+          <h3>炭火キッチン だいち</h3>
+          <p>飲食店向けサンプル。メニュー紹介・店舗情報・予約ボタンを配置した集客重視のデザイン。</p>
+          <a href="https://sample-restaurant-daichi.vercel.app" target="_blank" class="portfolio-link">サイトを見る <span>&rarr;</span></a>
+        </div>
+      </div>
+      <div class="portfolio-card reveal reveal-delay-2">
+        <div class="portfolio-thumb portfolio-thumb--bonesetter">
+          <div class="pt-bar"><div class="pt-dots"><span></span><span></span><span></span></div><div class="pt-url">sample-bonesetter-genki.vercel.app</div></div>
+          <div class="pt-body">
+            <div class="pt-title">体の悩みを、<br>根本から解決</div>
+            <div class="pt-btn" style="color:#0d9488;">初回無料相談 →</div>
+          </div>
+        </div>
+        <div class="portfolio-body">
+          <h3>げんき整骨院</h3>
+          <p>整骨院向けサンプル。施術メニュー・スタッフ紹介・初めての方への案内を分かりやすく構成。</p>
+          <a href="https://sample-bonesetter-genki.vercel.app" target="_blank" class="portfolio-link">サイトを見る <span>&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">Pricing</span>
+      <h2 class="section-title reveal">料金プラン</h2>
+    </div>
+    <div class="text-center"><span class="pricing-scarcity reveal">毎月先着3社限定 ・ 今月残り3枠</span></div>
+
+    <!-- 3 pricing cards -->
+    <div class="pricing-cards">
+      <!-- ライト -->
+      <div class="pricing-card reveal">
+        <p class="pricing-plan-label">Light</p>
+        <div class="pricing-amount">
+          <span class="pricing-amount-num">15</span>
+          <span class="pricing-amount-unit">万円</span>
+        </div>
+        <p class="pricing-monthly">月額 <strong>1万円</strong> / 保守込み</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="feat-icon feat-check">✓</span>HP制作（スマホ対応）</li>
+          <li><span class="feat-icon feat-check">✓</span>電話ボタン・Googleマップ込み</li>
+          <li><span class="feat-icon feat-check">✓</span>テキスト修正 月2回まで</li>
+          <li><span class="feat-icon feat-check">✓</span>SSL・バックアップ管理</li>
+          <li><span class="feat-icon feat-check">✓</span>メールサポート（2営業日以内）</li>
+          <li><span class="feat-icon feat-none">—</span><span style="color:var(--ink-faint)">Web予約システム</span></li>
+          <li><span class="feat-icon feat-none">—</span><span style="color:var(--ink-faint)">AIチャットボット</span></li>
+          <li><span class="feat-icon feat-none">—</span><span style="color:var(--ink-faint)">MEO対策</span></li>
+        </ul>
+        <a href="#contact" class="pricing-cta pricing-cta--outline">まず話だけ聞いてみる（無料）</a>
+      </div>
+
+      <!-- スタンダード（featured） -->
+      <div class="pricing-card pricing-card--featured reveal reveal-delay-1">
+        <span class="pricing-badge">最も選ばれています</span>
+        <p class="pricing-plan-label">Standard</p>
+        <div class="pricing-amount">
+          <span class="pricing-amount-num">30</span>
+          <span class="pricing-amount-unit">万円</span>
+        </div>
+        <p class="pricing-monthly">月額 <strong>1.5万円</strong> / 保守込み</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="feat-icon feat-check">✓</span>HP制作（スマホ対応）</li>
+          <li><span class="feat-icon feat-check">✓</span>電話ボタン・Googleマップ込み</li>
+          <li><span class="feat-icon feat-check">✓</span>テキスト修正 月5回まで</li>
+          <li><span class="feat-icon feat-check">✓</span>SSL・バックアップ管理</li>
+          <li><span class="feat-icon feat-check">✓</span>メールサポート（1営業日以内）</li>
+          <li><span class="feat-icon feat-check">✓</span>Web予約システム</li>
+          <li><span class="feat-icon feat-check">✓</span>AIチャットボット</li>
+          <li><span class="feat-icon feat-check">✓</span>アクセス解析レポート（月1回）</li>
+          <li><span class="feat-icon feat-none">—</span><span style="color:var(--ink-faint)">MEO対策</span></li>
+        </ul>
+        <a href="#contact" class="pricing-cta pricing-cta--primary">無料デモを見る</a>
+      </div>
+
+      <!-- プロ -->
+      <div class="pricing-card reveal reveal-delay-2">
+        <p class="pricing-plan-label">Pro</p>
+        <div class="pricing-amount">
+          <span class="pricing-amount-num">50</span>
+          <span class="pricing-amount-unit">万円</span>
+        </div>
+        <p class="pricing-monthly">月額 <strong>4万円</strong> / 保守込み</p>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li><span class="feat-icon feat-check">✓</span>HP制作（スマホ対応）</li>
+          <li><span class="feat-icon feat-check">✓</span>電話ボタン・Googleマップ込み</li>
+          <li><span class="feat-icon feat-check">✓</span>テキスト修正 無制限</li>
+          <li><span class="feat-icon feat-check">✓</span>SSL・バックアップ管理</li>
+          <li><span class="feat-icon feat-check">✓</span>優先サポート（即日対応）</li>
+          <li><span class="feat-icon feat-check">✓</span>Web予約システム</li>
+          <li><span class="feat-icon feat-check">✓</span>AIチャットボット</li>
+          <li><span class="feat-icon feat-check">✓</span>アクセス解析レポート（月1回）</li>
+          <li><span class="feat-icon feat-check-green">✓</span>MEO対策（Googleマップ上位表示）</li>
+          <li><span class="feat-icon feat-check-green">✓</span>月次改善コンサルティング</li>
+        </ul>
+        <a href="#contact" class="pricing-cta pricing-cta--outline">まず話だけ聞いてみる（無料）</a>
+      </div>
+    </div>
+
+    <!-- 比較表 -->
+    <div class="compare-section reveal">
+      <h3 class="compare-title">プラン詳細比較</h3>
+      <div class="compare-wrap">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="width:36%">機能・サービス</th>
+              <th>ライト</th>
+              <th class="th-std">スタンダード ★</th>
+              <th>プロ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>初期費用</td>
+              <td><span class="ct-price">15万円</span></td>
+              <td class="td-std"><span class="ct-price">30万円</span></td>
+              <td><span class="ct-price">50万円</span></td>
+            </tr>
+            <tr>
+              <td>月額（保守込み）</td>
+              <td><span class="ct-price">1万円</span></td>
+              <td class="td-std"><span class="ct-price">1.5万円</span></td>
+              <td><span class="ct-price">4万円</span></td>
+            </tr>
+            <tr>
+              <td>納品目安</td>
+              <td>最短1週間</td>
+              <td class="td-std">2〜3週間</td>
+              <td>3〜4週間</td>
+            </tr>
+            <tr>
+              <td>HP制作（スマホ対応）</td>
+              <td><span class="ct-check">✓</span></td>
+              <td class="td-std"><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+            </tr>
+            <tr>
+              <td>電話ボタン・Googleマップ</td>
+              <td><span class="ct-check">✓</span></td>
+              <td class="td-std"><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+            </tr>
+            <tr>
+              <td>テキスト修正</td>
+              <td>月2回</td>
+              <td class="td-std">月5回</td>
+              <td>無制限</td>
+            </tr>
+            <tr>
+              <td>SSL・バックアップ管理</td>
+              <td><span class="ct-check">✓</span></td>
+              <td class="td-std"><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+            </tr>
+            <tr>
+              <td>Web予約システム</td>
+              <td><span class="ct-dash">—</span></td>
+              <td class="td-std"><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+            </tr>
+            <tr>
+              <td>AIチャットボット</td>
+              <td><span class="ct-dash">—</span></td>
+              <td class="td-std"><span class="ct-check">✓</span></td>
+              <td><span class="ct-check">✓</span></td>
+            </tr>
+            <tr>
+              <td>アクセス解析レポート</td>
+              <td><span class="ct-dash">—</span></td>
+              <td class="td-std">月1回</td>
+              <td>月1回</td>
+            </tr>
+            <tr>
+              <td>MEO対策（Googleマップ上位表示）</td>
+              <td><span class="ct-dash">—</span></td>
+              <td class="td-std"><span class="ct-dash">—</span></td>
+              <td><span class="ct-check-green">✓</span></td>
+            </tr>
+            <tr>
+              <td>月次改善コンサルティング</td>
+              <td><span class="ct-dash">—</span></td>
+              <td class="td-std"><span class="ct-dash">—</span></td>
+              <td><span class="ct-check-green">✓</span></td>
+            </tr>
+            <tr>
+              <td>AI・チャットボット追加</td>
+              <td><span class="ct-dash">—</span></td>
+              <td class="td-std"><span class="ct-dash">—</span></td>
+              <td>別途お見積もり</td>
+            </tr>
+            <tr>
+              <td>サポート対応</td>
+              <td>メール<span class="ct-sub">2営業日以内</span></td>
+              <td class="td-std">メール<span class="ct-sub">1営業日以内</span></td>
+              <td>優先対応<span class="ct-sub">即日〜翌営業日</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="pricing-note reveal">※ 一般的な制作会社の相場は初期50〜100万円、月額2〜5万円。当サービスはフリーランスならではのコスト効率で、品質はそのままに大幅に費用を抑えています。<br>チャットボット・AI業務改善のオプション追加は別途ご相談ください。</p>
+    <div class="pricing-bottom-cta reveal">
+      <a href="#contact" class="cta-button">まずは無料でデモサイトを見てみる</a>
+    </div>
+  </div>
+</section>
+
+<!-- Track Record -->
+<section class="track-section section-alt">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">Track Record</span>
+      <h2 class="section-title reveal">実績</h2>
+    </div>
+    <p class="section-lead text-center mx-auto reveal">お客様のビジネスを支援しています</p>
+    <div class="track-record-card reveal">
+      <h3>HP制作案件 &#8212; 小売業のホームページを制作</h3>
+      <p class="track-year">2026年</p>
+      <p>お客様の要望をヒアリングし、集客に強いサイトを構築。商品の魅力が伝わるデザインと、お問い合わせまでの導線を設計しました。</p>
+      <div id="portfolio-yuu"><span class="track-status-dot"></span>詳細・サイトURLは近日公開予定です</div>
+    </div>
+  </div>
+</section>
+
+<!-- Profile -->
+<section class="profile-section" id="profile">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">Profile</span>
+      <h2 class="section-title reveal">プロフィール</h2>
+    </div>
+    <div class="section-lead" style="margin-bottom:40px">&nbsp;</div>
+    <div class="profile-inner reveal">
+      <div class="profile-photo" aria-label="中村元揮">MN</div>
+      <div class="profile-text">
+        <h3>中村元揮</h3>
+        <p class="profile-name-en">Motoki Nakamura</p>
+        <p>札幌在住。地域のお店や医院のWeb活用を応援しています。</p>
+        <p>IT企業での3年間のシステム開発経験を活かし、最新技術で制作コストを抑えた高品質なサイトを実現します。ホームページ制作から業務システム、AI導入まで、デジタル化のあらゆるご相談に対応いたします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-inner">
+      <p class="contact-main-cta reveal">御社専用のデモサイトを<br>無料でお作りします</p>
+      <p class="contact-sub reveal">まずはお気軽にメールでご連絡ください。<br>24時間以内にお返事いたします。<br><span style="font-size:13px; opacity:0.7;">しつこい営業は一切しません。断るのも自由です。</span></p>
+      <div class="contact-links reveal">
+        <a href="mailto:snkrs418@gmail.com" class="contact-btn contact-btn--email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          snkrs418@gmail.com
+        </a>
+        <a href="https://x.com/motoki0418" target="_blank" class="contact-btn contact-btn--outline">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @motoki0418
+        </a>
+        <a href="https://note.com/motoki_0418" target="_blank" class="contact-btn contact-btn--outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          note.com/motoki_0418
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">&copy; 2026 中村元揮</footer>
+
+<script>
+// Header scroll
+const header = document.getElementById('header');
+window.addEventListener('scroll', () => {
+  header.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const nav = document.getElementById('nav');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('active');
+  nav.classList.toggle('open');
+});
+nav.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => {
+    hamburger.classList.remove('active');
+    nav.classList.remove('open');
+  });
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// KPI count up
+const easeOut = t => 1 - Math.pow(1 - t, 3);
+const countObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el = entry.target;
+    const target = parseInt(el.dataset.target);
+    const duration = 1400;
+    const start = performance.now();
+    const tick = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const val = Math.round(easeOut(progress) * target);
+      el.textContent = val.toLocaleString('ja-JP');
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    countObserver.unobserve(el);
+  });
+}, { threshold: 0.6 });
+document.querySelectorAll('.kpi-count').forEach(el => {
+  el.textContent = '0';
+  countObserver.observe(el);
+});
+</script>
+</body>
+</html>
