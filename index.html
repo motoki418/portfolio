@@ -768,9 +768,9 @@ body::after {
 .contact-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .contact-success { display: none; text-align: center; padding: 32px; background: rgba(5,150,105,0.15); border: 1px solid rgba(5,150,105,0.3); border-radius: var(--radius); }
 .contact-success p { color: #6ee7b7; font-size: 15px; line-height: 1.8; }
-.contact-social { display: flex; justify-content: center; gap: 16px; margin-top: 32px; }
-.contact-social a { font-size: 14px; color: #64748b; transition: color 0.2s; }
-.contact-social a:hover { color: #94a3b8; }
+.contact-social { display: flex; justify-content: center; gap: 20px; margin-top: 32px; flex-wrap: wrap; }
+.contact-social a { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: #64748b; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 6px 14px; transition: all 0.2s; }
+.contact-social a:hover { color: #94a3b8; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); }
 @media (max-width: 768px) {
   .contact-main-cta { font-size: 21px; }
 }
@@ -778,7 +778,7 @@ body::after {
 /* --- Footer --- */
 .footer {
   text-align: center; padding: 28px 24px;
-  font-size: 13px; color: var(--ink-faint);
+  font-size: 14px; color: var(--ink-faint);
   border-top: 1px solid var(--border);
   background: var(--surface);
 }
@@ -1336,7 +1336,7 @@ body::after {
       <div class="profile-text">
         <h3>中村元揮</h3>
         <p class="profile-name-en">Motoki Nakamura</p>
-        <p>札幌在住。地域のお店や医院のWeb活用を応援しています。</p>
+        <p>札幌在住。地域のクリニック・飲食店の集客改善と業務効率化を、WebとAIでまるごと支援しています。</p>
         <p>IT企業での3年間のシステム開発経験を活かし、最新技術で制作コストを抑えた高品質なサイトを実現します。ホームページ制作から業務システム、AI導入まで、デジタル化のあらゆるご相談に対応いたします。</p>
       </div>
     </div>
@@ -1355,19 +1355,19 @@ body::after {
         <input type="hidden" name="from_name" value="中村元揮 ポートフォリオ">
         <input type="checkbox" name="botcheck" style="display:none">
         <div class="contact-form-group">
-          <label for="cf-name">お名前 <span style="color:#f87171">*</span></label>
+          <label for="cf-name">お名前 <span style="color:#f87171; font-size:11px; font-weight:700; background:rgba(248,113,113,0.12); padding:1px 6px; border-radius:4px; margin-left:4px;">必須</span></label>
           <input type="text" id="cf-name" name="name" placeholder="山田 太郎" required>
         </div>
         <div class="contact-form-group">
-          <label for="cf-company">会社名・クリニック名 <span style="color:#f87171">*</span></label>
+          <label for="cf-company">会社名・クリニック名 <span style="color:#f87171; font-size:11px; font-weight:700; background:rgba(248,113,113,0.12); padding:1px 6px; border-radius:4px; margin-left:4px;">必須</span></label>
           <input type="text" id="cf-company" name="company" placeholder="〇〇クリニック" required>
         </div>
         <div class="contact-form-group">
-          <label for="cf-email">メールアドレス <span style="color:#f87171">*</span></label>
+          <label for="cf-email">メールアドレス <span style="color:#f87171; font-size:11px; font-weight:700; background:rgba(248,113,113,0.12); padding:1px 6px; border-radius:4px; margin-left:4px;">必須</span></label>
           <input type="email" id="cf-email" name="email" placeholder="example@example.com" required>
         </div>
         <div class="contact-form-group">
-          <label for="cf-message">お問い合わせ内容 <span style="color:#f87171">*</span></label>
+          <label for="cf-message">お問い合わせ内容 <span style="color:#f87171; font-size:11px; font-weight:700; background:rgba(248,113,113,0.12); padding:1px 6px; border-radius:4px; margin-left:4px;">必須</span></label>
           <textarea id="cf-message" name="message" placeholder="ご質問・ご相談内容をご記入ください" required></textarea>
         </div>
         <button type="submit" class="contact-submit" id="contactSubmit">送信する</button>
@@ -1377,8 +1377,14 @@ body::after {
         <p>お問い合わせありがとうございます。<br>24時間以内にご返信いたします。</p>
       </div>
       <div class="contact-social">
-        <a href="https://x.com/motoki0418" target="_blank">X @motoki0418</a>
-        <a href="https://note.com/motoki_0418" target="_blank">note</a>
+        <a href="https://x.com/motoki0418" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          @motoki0418
+        </a>
+        <a href="https://note.com/motoki_0418" target="_blank">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3C3.9 3 3 3.9 3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5zm2 4h10v2H7V7zm0 4h7v2H7v-2z"/></svg>
+          note
+        </a>
       </div>
     </div>
   </div>
