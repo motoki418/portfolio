@@ -738,27 +738,41 @@ body::after {
   background: radial-gradient(ellipse 600px 400px at 70% 50%, rgba(37,99,235,0.12), transparent);
   pointer-events: none;
 }
-.contact-inner { text-align: center; max-width: 560px; margin: 0 auto; position: relative; z-index: 1; }
+.contact-inner { text-align: center; max-width: 640px; margin: 0 auto; position: relative; z-index: 1; }
 .contact-main-cta { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: #fff; margin-bottom: 16px; line-height: 1.4; }
 .contact-sub { font-size: 14.5px; color: #94a3b8; margin-bottom: 40px; line-height: 1.8; }
-.contact-links { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.contact-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 15px 36px; border-radius: var(--radius-sm);
-  font-size: 14.5px; font-weight: 600; min-width: 300px;
+.contact-form { text-align: left; display: flex; flex-direction: column; gap: 16px; }
+.contact-form-group { display: flex; flex-direction: column; gap: 6px; }
+.contact-form-group label { font-size: 13px; font-weight: 600; color: #cbd5e1; letter-spacing: 0.04em; }
+.contact-form-group input,
+.contact-form-group textarea {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-sm); padding: 13px 16px;
+  font-size: 15px; color: #fff; font-family: var(--font-body);
+  transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+  outline: none; width: 100%;
+}
+.contact-form-group input::placeholder,
+.contact-form-group textarea::placeholder { color: #475569; }
+.contact-form-group input:focus,
+.contact-form-group textarea:focus { border-color: var(--accent); background: rgba(37,99,235,0.08); }
+.contact-form-group textarea { resize: vertical; min-height: 120px; }
+.contact-submit {
+  background: var(--accent); color: #fff; border: none; cursor: pointer;
+  padding: 16px; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
+  font-family: var(--font-body); width: 100%; margin-top: 4px;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
   transition: all 0.25s var(--ease);
 }
-.contact-btn--email {
-  background: var(--accent); color: #fff;
-  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
-}
-.contact-btn--email:hover { background: var(--accent-hover); color: #fff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.4); }
-.contact-btn--outline { background: rgba(255,255,255,0.06); color: #e2e8f0; border: 1px solid rgba(255,255,255,0.12); }
-.contact-btn--outline:hover { background: rgba(255,255,255,0.1); color: #fff; transform: translateY(-1px); }
-.contact-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+.contact-submit:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.4); }
+.contact-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.contact-success { display: none; text-align: center; padding: 32px; background: rgba(5,150,105,0.15); border: 1px solid rgba(5,150,105,0.3); border-radius: var(--radius); }
+.contact-success p { color: #6ee7b7; font-size: 15px; line-height: 1.8; }
+.contact-social { display: flex; justify-content: center; gap: 16px; margin-top: 32px; }
+.contact-social a { font-size: 13px; color: #64748b; transition: color 0.2s; }
+.contact-social a:hover { color: #94a3b8; }
 @media (max-width: 768px) {
   .contact-main-cta { font-size: 21px; }
-  .contact-btn { min-width: 260px; font-size: 14px; padding: 13px 28px; }
 }
 
 /* --- Footer --- */
@@ -1334,20 +1348,36 @@ body::after {
   <div class="container">
     <div class="contact-inner">
       <p class="contact-main-cta reveal">御社専用のデモサイトを<br>無料でお作りします</p>
-      <p class="contact-sub reveal">まずはお気軽にメールでご連絡ください。<br>24時間以内にお返事いたします。<br><span style="font-size:13px; opacity:0.7;">しつこい営業は一切しません。断るのも自由です。</span></p>
-      <div class="contact-links reveal">
-        <a href="mailto:snkrs418@gmail.com" class="contact-btn contact-btn--email">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          snkrs418@gmail.com
-        </a>
-        <a href="https://x.com/motoki0418" target="_blank" class="contact-btn contact-btn--outline">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          @motoki0418
-        </a>
-        <a href="https://note.com/motoki_0418" target="_blank" class="contact-btn contact-btn--outline">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          note.com/motoki_0418
-        </a>
+      <p class="contact-sub reveal">フォームからお気軽にご連絡ください。<br>24時間以内にお返事いたします。<br><span style="font-size:13px; opacity:0.7;">しつこい営業は一切しません。断るのも自由です。</span></p>
+      <form class="contact-form reveal" id="contactForm" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="fa0c4986-834c-439c-bb39-e36f5be2f3c3">
+        <input type="hidden" name="subject" value="ポートフォリオサイトからのお問い合わせ">
+        <input type="hidden" name="from_name" value="中村元揮 ポートフォリオ">
+        <input type="checkbox" name="botcheck" style="display:none">
+        <div class="contact-form-group">
+          <label for="cf-name">お名前 <span style="color:#f87171">*</span></label>
+          <input type="text" id="cf-name" name="name" placeholder="山田 太郎" required>
+        </div>
+        <div class="contact-form-group">
+          <label for="cf-company">会社名・クリニック名 <span style="color:#f87171">*</span></label>
+          <input type="text" id="cf-company" name="company" placeholder="〇〇クリニック" required>
+        </div>
+        <div class="contact-form-group">
+          <label for="cf-email">メールアドレス <span style="color:#f87171">*</span></label>
+          <input type="email" id="cf-email" name="email" placeholder="example@example.com" required>
+        </div>
+        <div class="contact-form-group">
+          <label for="cf-message">お問い合わせ内容 <span style="color:#f87171">*</span></label>
+          <textarea id="cf-message" name="message" placeholder="ご質問・ご相談内容をご記入ください" required></textarea>
+        </div>
+        <button type="submit" class="contact-submit" id="contactSubmit">送信する</button>
+      </form>
+      <div class="contact-success" id="contactSuccess">
+        <p>お問い合わせありがとうございます。<br>24時間以内にご返信いたします。</p>
+      </div>
+      <div class="contact-social">
+        <a href="https://x.com/motoki0418" target="_blank">X @motoki0418</a>
+        <a href="https://note.com/motoki_0418" target="_blank">note</a>
       </div>
     </div>
   </div>
@@ -1375,6 +1405,29 @@ nav.querySelectorAll('a').forEach(a => {
     nav.classList.remove('open');
   });
 });
+
+// Contact form
+const contactForm = document.getElementById('contactForm');
+const contactSubmit = document.getElementById('contactSubmit');
+const contactSuccess = document.getElementById('contactSuccess');
+if (contactForm) {
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    contactSubmit.disabled = true;
+    contactSubmit.textContent = '送信中…';
+    const data = new FormData(contactForm);
+    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+    const json = await res.json();
+    if (json.success) {
+      contactForm.style.display = 'none';
+      contactSuccess.style.display = 'block';
+    } else {
+      contactSubmit.disabled = false;
+      contactSubmit.textContent = '送信する';
+      alert('送信に失敗しました。時間をおいて再度お試しください。');
+    }
+  });
+}
 
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
