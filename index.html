@@ -709,11 +709,11 @@ body::after {
 .profile-photo {
   flex-shrink: 0; width: 108px; height: 108px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--ink) 0%, #334155 100%);
-  display: flex; align-items: center; justify-content: center;
-  color: #fff; font-family: var(--font-display);
-  font-size: 30px; font-weight: 700; letter-spacing: 0.04em;
+  overflow: hidden;
   box-shadow: 0 4px 20px rgba(15,23,42,0.12);
+}
+.profile-photo img {
+  width: 100%; height: 100%; object-fit: cover; object-position: center top;
 }
 .profile-text h3 { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
 .profile-name-en {
@@ -1316,7 +1316,9 @@ body::after {
     </div>
     <div class="section-lead" style="margin-bottom:40px">&nbsp;</div>
     <div class="profile-inner reveal">
-      <div class="profile-photo" aria-label="中村元揮">MN</div>
+      <div class="profile-photo">
+        <img src="profile.png" alt="中村元揮">
+      </div>
       <div class="profile-text">
         <h3>中村元揮</h3>
         <p class="profile-name-en">Motoki Nakamura</p>
