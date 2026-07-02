@@ -1,0 +1,2 @@
+# gitleaks red 検証用の偽トークン（実在しない値・マージしない・bd nakamuramotoki-e82）
+token = "ghp_x9Qz7Lm2Kp4Vn8Rt3Wc6Yb1Ud5Sf0Hj2Ng4A"
