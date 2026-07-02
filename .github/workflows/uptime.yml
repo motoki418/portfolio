@@ -1,0 +1,84 @@
+name: Uptime monitor
+
+# 本番を定期スモークし、落ちていれば GitHub issue で自動通知・復旧で自動クローズする。
+# tomozane-matching-mvp の uptime.yml を雛形に横展開（fleet 標準・追加 secret 不要）。
+on:
+  schedule:
+    - cron: "*/30 * * * *" # 30分ごと（無料枠を圧迫しない間隔）
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: smoke
+        continue-on-error: true
+        run: node scripts/smoke.mjs "https://katachi-ai.com"
+
+      - name: 失敗ならアラート issue を作成（既存があれば重複させない）
+        if: steps.smoke.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'prod-down';
+            const title = '🚨 本番スモーク失敗（自動検知）';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            try {
+              await github.rest.issues.createLabel({ owner: context.repo.owner, repo: context.repo.repo, name: label, color: 'd73a4a' });
+            } catch (e) { /* 既存ならスキップ */ }
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: label,
+            });
+            const body = [
+              '本番のスモークテストが失敗しました（自動検知）。',
+              '',
+              `- 失敗ログ: ${runUrl}`,
+              '- 対象: https://katachi-ai.com',
+              '',
+              '営業 LP 本体の配信が壊れている可能性があります。',
+              '復旧すると、この issue は次回の監視で自動的にクローズされます。',
+            ].join('\n');
+            if (open.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, labels: [label], body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: open[0].number,
+                body: `まだ失敗が続いています。\n- 失敗ログ: ${runUrl}`,
+              });
+            }
+
+      - name: 成功なら open のアラート issue を閉じる（復旧通知）
+        if: steps.smoke.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'prod-down';
+            const { data: open } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: label,
+            });
+            for (const issue of open) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                body: '✅ 本番スモークが復旧を確認しました。自動でクローズします。',
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number, state: 'closed',
+              });
+            }
