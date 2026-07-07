@@ -64,8 +64,8 @@
     ]
   },
   "makesOffer": [
-    { "@type": "Offer", "name": "ライト伴走（隔週・継続）", "price": "150000", "priceCurrency": "JPY", "description": "月2回の60分MTGとチャット相談（営業日24時間以内に返信）で、AI活用の見直しと改善を続けるプラン（税別）。" },
-    { "@type": "Offer", "name": "集中伴走（週次・継続）", "price": "250000", "priceCurrency": "JPY", "description": "週1回の60分MTGと月次定例、チャット相談で、試作から定着までを最短で進めるプラン（税別）。" },
+    { "@type": "Offer", "name": "ライト伴走（隔週・継続）", "price": "150000", "priceCurrency": "JPY", "description": "月2回の60分MTGとチャット相談（営業日24時間以内に返信）に、実装枠 月5時間（未使用分は翌月繰越可）を含み、AI活用の見直しと改善を続けるプラン（税別）。" },
+    { "@type": "Offer", "name": "集中伴走（週次・継続）", "price": "250000", "priceCurrency": "JPY", "description": "週1回の60分MTGと月次定例、チャット相談に、実装枠 月10時間（未使用分は翌月繰越可）とAI利用ルールの整備を含み、試作から定着までを最短で進めるプラン（税別）。" },
     { "@type": "Offer", "name": "1ヶ月支援（単発）", "price": "400000", "priceCurrency": "JPY", "description": "現状整理・設計・試作・運用手順書づくりまでを1ヶ月で行う単発パッケージ（税別）。" },
     { "@type": "Offer", "name": "初回相談", "price": "0", "priceCurrency": "JPY", "description": "初回1時間の無料相談。" }
   ]
@@ -86,7 +86,7 @@
     { "@type": "Question", "name": "ITベンダーへの丸投げとの違いは？", "acceptedAnswer": { "@type": "Answer", "text": "最初から大きな開発を前提にしません。現場の担当者と一緒に、何をAIに任せて何を人が確認するかを決め、小さく試せる形から進めます。必要な範囲だけを段階的に広げます。" } },
     { "@type": "Question", "name": "ChatGPTを社内で使うだけとの違いは？", "acceptedAnswer": { "@type": "Answer", "text": "ツールを入れるだけでは定着しにくい場面があります。利用ルール、確認手順、使ってよい業務範囲を決め、実際の業務フローに組み込むところまで支援します。" } },
     { "@type": "Question", "name": "初回相談は無料ですか？", "acceptedAnswer": { "@type": "Answer", "text": "はい。初回相談は1時間無料です。現状、気になっている業務、AIで試したいことを確認し、有料支援が必要かどうかも含めて整理します。" } },
-    { "@type": "Question", "name": "料金はどのように決まりますか？", "acceptedAnswer": { "@type": "Answer", "text": "プラン制です。隔週MTGのライト伴走が月15万円、週1回MTGの集中伴走が月25万円、単発の1ヶ月支援が40万円（いずれも税別）です。どのプランが合うかは、初回相談で対象業務を確認しながら整理します。" } },
+    { "@type": "Question", "name": "料金はどのように決まりますか？", "acceptedAnswer": { "@type": "Answer", "text": "プラン制です。隔週MTGと実装枠 月5時間のライト伴走が月15万円、週1回MTGと実装枠 月10時間の集中伴走が月25万円、単発の1ヶ月支援が40万円（いずれも税別）です。実装枠を超える規模の開発は、受託開発として別途お見積りします。どのプランが合うかは、初回相談で対象業務を確認しながら整理します。" } },
     { "@type": "Question", "name": "いきなり高額なシステム開発になりますか？", "acceptedAnswer": { "@type": "Answer", "text": "なりません。まず1業務から小さく始める方針です。高額な開発や大規模なシステム導入を前提にせず、必要な範囲を確認してから進めます。" } },
     { "@type": "Question", "name": "社内データや顧客情報をAIに入れても大丈夫ですか？", "acceptedAnswer": { "@type": "Answer", "text": "扱う情報の種類と利用するAIツールの設定を確認してから進めます。必要に応じて、入力してよい情報、入れない情報、確認手順を整理します。" } },
     { "@type": "Question", "name": "ChatGPTなどを社員が自由に使うのが不安です。", "acceptedAnswer": { "@type": "Answer", "text": "その不安は自然です。まず利用ルール、確認手順、使ってよい業務範囲を決めることで、属人的な使い方や情報の扱いの不安を減らします。" } },
@@ -1529,15 +1529,16 @@ section { padding: 104px 0; }
       <span class="section-label reveal">料金プラン</span>
       <h2 class="section-title reveal">まず無料相談で、<br>必要な範囲を確認します</h2>
     </div>
-    <p class="section-lead text-center mx-auto reveal">初回相談は1時間無料です。支援の進め方に合わせて、3つの定額プランから選べます。</p>
+    <p class="section-lead text-center mx-auto reveal">初回相談は1時間無料です。支援の進め方に合わせて、3つの定額プランから選べます。どのプランも、受託開発と同じ品質の実装を月額の範囲でご提供します。</p>
     <div class="pricing-grid">
       <div class="pricing-card reveal">
         <p class="pricing-card-label">継続・隔週</p>
         <h3>ライト伴走</h3>
-        <p>隔週ペースで定着を進めるプランです。月2回の60分MTGとチャット相談（営業日24時間以内に返信）で、AI活用の見直しと改善を続けます。</p>
+        <p>隔週ペースで定着を進めるプランです。月2回の60分MTGとチャット相談に加え、月5時間の実装枠で、テンプレや小さな自動化を実際に動く形にします。</p>
         <ul class="pricing-deliverables">
           <li>隔週MTGの議事録</li>
           <li>チャット相談（営業日24時間以内に返信）</li>
+          <li>実装枠 月5時間（テンプレ・小さな自動化。未使用分は翌月繰越）</li>
           <li>テンプレ・手順の見直し</li>
         </ul>
         <p class="pricing-price">月15万円（税別）</p>
@@ -1545,10 +1546,11 @@ section { padding: 104px 0; }
       <div class="pricing-card reveal reveal-delay-1">
         <p class="pricing-card-label">継続・週次</p>
         <h3>集中伴走</h3>
-        <p>立ち上げ期を週次で一気に進めるプランです。週1回の60分MTGと月次定例、チャット相談で、試作から定着までを最短で形にします。</p>
+        <p>立ち上げ期を週次で一気に進めるプランです。週1回の60分MTGと月次定例、チャット相談に、月10時間の実装枠で、試作から社内ツールまで作り込みます。</p>
         <ul class="pricing-deliverables">
           <li>週次MTGと月次定例</li>
-          <li>試作の実装支援</li>
+          <li>実装枠 月10時間（社内ツール試作・AI環境整備。未使用分は翌月繰越）</li>
+          <li>AI利用ルールの整備（使ってよいデータ・確認の流れ・止める条件）</li>
           <li>定着チェックリスト</li>
         </ul>
         <p class="pricing-price">月25万円（税別）</p>
@@ -1566,7 +1568,7 @@ section { padding: 104px 0; }
       </div>
     </div>
     <p class="pricing-roi reveal">例：週5時間かかっていた業務が30分になった事例では、月20時間超の工数削減に相当します。まず無料相談で、御社の対象業務を一緒に確認します。</p>
-    <p class="pricing-note reveal">まず試すなら1ヶ月支援、定着まで進めるなら集中伴走が向いています。月次プランの最低契約期間は3ヶ月です。AI活用は短期間では定着しにくいため、腰を据えて取り組める期間としています。</p>
+    <p class="pricing-note reveal">まず試すなら1ヶ月支援、定着まで進めるなら集中伴走が向いています。月次プランの最低契約期間は3ヶ月です。AI活用は短期間では定着しにくいため、腰を据えて取り組める期間としています。実装枠を超える規模の開発（新規システム・アプリなど）は、受託開発として別途お見積りします（ご契約中の企業を優先して着手します）。</p>
     <div class="pricing-cta reveal">
       <a href="#contact" class="btn-primary">まず無料相談で確認する</a>
     </div>
@@ -1771,7 +1773,7 @@ section { padding: 104px 0; }
               <span class="faq-icon" aria-hidden="true"></span>
             </button>
             <div class="faq-a">
-              <p class="faq-a-inner">プラン制です。隔週MTGのライト伴走が月15万円、週1回MTGの集中伴走が月25万円、単発の1ヶ月支援が40万円（いずれも税別）です。どのプランが合うかは、初回相談で対象業務を確認しながら整理します。</p>
+              <p class="faq-a-inner">プラン制です。隔週MTGと実装枠 月5時間のライト伴走が月15万円、週1回MTGと実装枠 月10時間の集中伴走が月25万円、単発の1ヶ月支援が40万円（いずれも税別）です。実装枠を超える規模の開発は、受託開発として別途お見積りします。どのプランが合うかは、初回相談で対象業務を確認しながら整理します。</p>
             </div>
           </div>
           <div class="faq-item">

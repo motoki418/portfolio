@@ -30,6 +30,13 @@ test.describe('katachi-ai LP — 主要導線E2E', () => {
     await expect(pricing).toContainText('40万円');
   });
 
+  test('伴走プランに実装枠が明示される（2026-07 商品改訂の恒久ガード）', async ({ page }) => {
+    const pricing = page.locator('#pricing');
+    await expect(pricing.locator('.pricing-card', { hasText: 'ライト伴走' })).toContainText('実装枠 月5時間');
+    await expect(pricing.locator('.pricing-card', { hasText: '集中伴走' })).toContainText('実装枠 月10時間');
+    await expect(pricing.locator('.pricing-card', { hasText: '集中伴走' })).toContainText('AI利用ルールの整備');
+  });
+
   test('FAQアコーディオンがクリックで開く', async ({ page }) => {
     const firstItem = page.locator('.faq-item').first();
     const firstQ = firstItem.locator('.faq-q');
