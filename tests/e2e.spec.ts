@@ -17,7 +17,7 @@ test.describe('katachi-ai LP — 主要導線E2E', () => {
 
   test('開発セクションの価格が正しい（価格改定の恒久ガード）', async ({ page }) => {
     const dev = page.locator('#development');
-    await expect(dev.locator('.pricing-card', { hasText: 'Web制作・LP制作' })).toContainText('40万円〜');
+    await expect(dev.locator('.pricing-card', { hasText: 'Web制作・LP制作' })).toContainText('20万円〜');
     await expect(dev.locator('.pricing-card', { hasText: 'AIを組み込んだシステム開発' })).toContainText('120万円〜');
     await expect(dev.locator('.pricing-card', { hasText: '業務システム・ツール開発' })).toContainText('150万円〜');
     await expect(dev.locator('.pricing-card', { hasText: 'アプリ開発' })).toContainText('150万円〜');
