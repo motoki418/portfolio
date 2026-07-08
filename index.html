@@ -309,7 +309,7 @@ section { padding: 104px 0; }
   .header-brand { font-size: 14px; }
   .header-nav { gap: 16px; }
   .header-nav a { font-size: 13px; }
-  /* 簡略化: 先頭3リンクを隠し「料金」「開発」と CTA を残す */
+  /* 簡略化: 先頭3リンク（お悩み・導入事例・進め方）を隠し「料金」「開発」「補助金」と CTA を残す */
   .header-nav a:nth-child(-n+3) { display: none; }
 }
 
@@ -909,8 +909,103 @@ section { padding: 104px 0; }
   .dev-grid { grid-template-columns: 1fr; }
 }
 
+/* ── 補助金活用 ── */
+.subsidy-section { background: var(--surface); }
+
+.subsidy-card-tag {
+  margin-top: 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--warm-text);
+}
+
+.subsidy-example {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 30px 32px;
+}
+
+.subsidy-example-label {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.subsidy-example-body {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.9;
+}
+
+.subsidy-example-note {
+  margin-top: 16px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.8;
+}
+
+.subsidy-support-note {
+  max-width: 760px;
+  margin: 28px auto 0;
+  font-size: 14px;
+  color: var(--ink-muted);
+  line-height: 1.9;
+  text-align: center;
+}
+
+.subsidy-disclaimer {
+  max-width: 760px;
+  margin: 28px auto 0;
+  background: var(--surface-warm);
+  border-radius: var(--radius-sm);
+  padding: 24px 26px;
+}
+
+.subsidy-disclaimer-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+
+.subsidy-disclaimer ul {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.subsidy-disclaimer li {
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.85;
+  display: flex;
+  gap: 8px;
+}
+.subsidy-disclaimer li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--warm);
+  flex: 0 0 auto;
+  margin-top: 9px;
+}
+
+@media (max-width: 768px) {
+  .subsidy-example { padding: 22px 20px; }
+  .subsidy-disclaimer { padding: 20px 18px; }
+}
+
 /* ── FAQ ── */
-.faq-section { background: var(--surface); }
+.faq-section { background: var(--surface-warm); }
+/* warm 背景上のカテゴリ見出しは --ink-muted だと AA 未達(4.19:1) → --ink-soft */
+.faq-section .faq-category-title { color: var(--ink-soft); }
 
 .faq-categories {
   display: grid;
@@ -1011,7 +1106,7 @@ section { padding: 104px 0; }
 }
 
 /* ── Profile ── */
-.profile-section { background: var(--surface-warm); }
+.profile-section { background: var(--surface); }
 
 .profile-card {
   border: 1px solid var(--line);
@@ -1108,9 +1203,13 @@ section { padding: 104px 0; }
 }
 
 /* ── Contact ── */
-.contact-section { background: var(--surface); }
-/* surface 背景になった contact 上ではピルが同色化するため warm で境界を確保 */
-.contact-section .contact-example { background: var(--surface-warm); }
+.contact-section { background: var(--surface-warm); }
+/* warm 背景になった contact 上ではピルが同色化するため白カード化して境界を確保 */
+.contact-section .contact-example { background: var(--surface-raised); }
+/* warm 背景上の地色テキストは --ink-muted だと AA 未達(4.19:1) → --ink-soft
+   （フォーム内の .contact-policy は白カード上なので対象外） */
+.contact-section .contact-sub,
+.contact-section .contact-social a { color: var(--ink-soft); }
 
 .contact-inner {
   max-width: 680px;
@@ -1333,6 +1432,7 @@ section { padding: 104px 0; }
       <a href="#process">進め方</a>
       <a href="#pricing">料金</a>
       <a href="#development">開発</a>
+      <a href="#subsidy">補助金</a>
       <a href="#contact" class="nav-cta">相談する</a>
     </nav>
   </div>
@@ -1653,7 +1753,73 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 7. FAQ ── -->
+<!-- ── 7. 補助金活用 ── -->
+<section class="subsidy-section" id="subsidy">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">補助金活用</span>
+      <h2 class="section-title reveal">AI導入・開発の初期費用を、<br>補助金で軽くする</h2>
+    </div>
+    <p class="section-lead text-center mx-auto reveal">AIツールの導入やシステム開発には、国や札幌市の補助金を活用できる場合があります。御社の業務に合う制度の当たりをつけ、対象になり得る費用の切り分けからお手伝いします。</p>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <p class="pricing-card-label">ツール導入</p>
+        <h3>AIツール・SaaSの導入費</h3>
+        <p>AIを搭載した対象ツールの導入費・クラウド利用料が補助の対象になり得ます。</p>
+        <ul class="pricing-deliverables">
+          <li>デジタル化・AI導入補助金2026（旧IT導入補助金）</li>
+          <li>補助率 1/2〜2/3・最大450万円（通常枠）</li>
+        </ul>
+        <p class="subsidy-card-tag">中小企業・小規模事業者向け</p>
+      </div>
+      <div class="pricing-card reveal reveal-delay-1">
+        <p class="pricing-card-label">開発・構築</p>
+        <h3>AI開発・システム構築費</h3>
+        <p>自社業務の省力化に向けた、オーダーメイドのAIシステム開発費が対象になり得ます。</p>
+        <ul class="pricing-deliverables">
+          <li>中小企業省力化投資補助金（一般型）</li>
+          <li>機械装置・システム構築費として計上</li>
+        </ul>
+        <p class="subsidy-card-tag">人手不足の省力化投資が対象</p>
+      </div>
+      <div class="pricing-card reveal reveal-delay-2">
+        <p class="pricing-card-label">札幌市の上乗せ</p>
+        <h3>札幌の事業者向け 上乗せ補助</h3>
+        <p>国の補助に札幌市の補助を上乗せできる場合があり、市内事業者はさらに負担を抑えられます。</p>
+        <ul class="pricing-deliverables">
+          <li>札幌市デジタル化・AI導入促進補助金（国の補助金と併用・自己負担の1/2、上限225万円）</li>
+          <li>札幌市DX・賃上げ加速化補助金（賃上げとDXを同時に進める企業向け・上限500万円）</li>
+        </ul>
+        <p class="subsidy-card-tag">札幌市内の中小企業向け（要件あり）</p>
+      </div>
+    </div>
+
+    <div class="subsidy-example reveal">
+      <p class="subsidy-example-label">実質負担のイメージ（例）</p>
+      <p class="subsidy-example-body"><strong>デジタル化・AI導入補助金2026（通常枠）を活用する場合</strong><br>対象となるAIツールの導入費が、補助率1/2以内（賃上げ要件を満たすと2/3以内）・最大450万円まで補助されます。たとえば<strong>100万円のツール導入なら、補助率1/2で自己負担はおよそ50万円、賃上げ要件を満たして2/3ならおよそ33万円まで下がります</strong>。さらに札幌市の上乗せ補助を使えば、その自己負担額の1/2（上限225万円）が上乗せされ、負担がさらに下がる場合があります。</p>
+      <p class="subsidy-example-note">※制度の上限・補助率に基づく試算例です。実際の補助額・対象可否は、ツールの登録状況・審査・御社の要件により異なります。月額の伴走支援（顧問）料金そのものは原則として補助対象外で、補助の対象になり得るのはツール導入費・開発費など、制度の対象経費に該当する部分に限られます。</p>
+    </div>
+
+    <p class="subsidy-support-note reveal">御社が補助金でAIツールを導入しやすいよう、「IT導入支援事業者」としての対応も前向きに検討しています。制度に合わせて、補助対象になる費用（ツール導入・開発）と、月額の伴走支援を明確に切り分けてご案内します。</p>
+
+    <div class="subsidy-disclaimer reveal">
+      <p class="subsidy-disclaimer-title">補助金活用についてのご注意</p>
+      <ul>
+        <li>補助金・助成金は審査があり、申請すれば必ず採択されるものではありません。</li>
+        <li>制度の要件・補助率・上限額・受付期間は、年度および公募回によって変わります。掲載内容は2026年7月時点の情報です。</li>
+        <li>最新かつ正確な情報は、各制度の公募要領・公式サイトでご確認ください。</li>
+        <li>月額の伴走支援（顧問）料金そのものは、原則として補助対象外です。</li>
+        <li>具体的な対象可否・申請可否は、御社の状況と最新の公募要領に基づく個別確認が必要です。</li>
+      </ul>
+    </div>
+
+    <div class="pricing-cta reveal">
+      <a href="#contact" class="btn-primary">補助金の活用について相談する</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── 8. FAQ ── -->
 <section class="faq-section" id="faq">
   <div class="container">
     <div class="text-center">
@@ -1825,7 +1991,7 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 8. プロフィール ── -->
+<!-- ── 9. プロフィール ── -->
 <section class="profile-section" id="profile">
   <div class="container">
     <div class="text-center">
@@ -1863,7 +2029,7 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 9. 問い合わせ ── -->
+<!-- ── 10. 問い合わせ ── -->
 <section class="contact-section" id="contact">
   <div class="container">
     <div class="contact-inner">
