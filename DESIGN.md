@@ -352,7 +352,7 @@ JS: `IntersectionObserver` で `.visible` を付与。スクロールイベン�
 - 奇数セクション: `var(--surface)` （白に近い）
 - 偶数セクション: `var(--surface-warm)` （warm ベージュ）
 
-現在の順序: hero(gradient) → why(surface) → concerns(warm) → cases(surface) → process(warm) → pricing(surface) → development(warm) → faq(surface) → profile(warm) → contact(surface)
+現在の順序: hero(gradient) → why(surface) → concerns(warm) → cases(surface) → process(warm) → pricing(surface) → development(warm) → subsidy(surface) → faq(warm) → profile(surface) → contact(warm)
 
 ---
 
