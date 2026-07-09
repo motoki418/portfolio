@@ -39,3 +39,4 @@ npm run report          # 直近の結果をHTMLレポートで開く
 - `--window-size` 等の素のヘッドレス撮影と違い、Playwright は本物の WebKit でモバイルを描画する。
   ただし実機 iPhone Safari と完全一致ではない（flex-wrap/gap で稀に差）。重要セクションは
   ときどき実機でも目視する。
+
