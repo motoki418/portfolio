@@ -31,6 +31,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "基準画像に差分なし"
           else
-            git commit -m "chore: Linux ビジュアル基準画像を更新 [skip ci]"
+            # CI-skip magic string は付けない（squash 本文へ混入すると main の Deploy が無言スキップされる）
+            git commit -m "chore: Linux ビジュアル基準画像を更新"
             git push
           fi
