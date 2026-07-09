@@ -72,7 +72,7 @@
       "url": "https://katachi-ai.com/",
       "image": "https://katachi-ai.com/profile.png",
       "jobTitle": "AI導入支援・エンジニア",
-      "description": "札幌在住のエンジニア。製造業・建設業の現場経験を経て、中小企業のAI導入・AI活用を相談から定着まで直接支援。",
+      "description": "札幌在住のエンジニア。製造業・建設業の現場経験を経てITに転身。中小企業のAI導入・AI活用を相談から定着まで直接支援し、AI駆動開発で実装まで伴走。",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "札幌市",
@@ -1343,10 +1343,97 @@ section { padding: 104px 0; }
 }
 .profile-link:hover { color: var(--ink); border-color: var(--line-strong); }
 
+.profile-career {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.profile-career-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 18px;
+  letter-spacing: 0.02em;
+}
+.career-timeline {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-left: 2px solid var(--surface-tint);
+}
+.career-timeline > li {
+  position: relative;
+  padding: 0 0 22px 20px;
+}
+.career-timeline > li:last-child { padding-bottom: 0; }
+.career-timeline > li::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warm);
+  box-shadow: 0 0 0 3px var(--surface-raised);
+}
+.career-period {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--warm-text);
+  margin-bottom: 4px;
+}
+.career-timeline h4 {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.45;
+}
+.career-timeline p {
+  font-size: 13.5px;
+  color: var(--ink-muted);
+  line-height: 1.8;
+  margin: 0;
+}
+.career-timeline ul {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 5px;
+}
+.career-timeline ul li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+.career-timeline ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  box-sizing: border-box;
+}
+
 @media (max-width: 680px) {
   .profile-card { padding: 26px 20px; }
   .profile-inner { grid-template-columns: 1fr; gap: 20px; }
   .profile-photo img { width: 96px; height: 96px; }
+  .profile-career { margin-top: 24px; padding-top: 22px; }
+  .career-timeline > li { padding-left: 16px; padding-bottom: 18px; }
 }
 
 /* ── Contact ── */
@@ -2152,13 +2239,51 @@ section { padding: 104px 0; }
         <div class="profile-text">
           <h3>中村元揮</h3>
           <p class="profile-name-en">Motoki Nakamura</p>
-          <p>札幌在住のエンジニア。製造業・建設業の現場で働いたのちITエンジニアに転身し、2026年に独立しました。中小企業のAI導入・AI活用支援を、相談・設計・試作・導入後の見直しまで基本的に本人が直接対応します。</p>
+          <p>札幌在住のエンジニア。製造業・建設業の現場で約9年働いたのちITエンジニアに転身し、2026年に独立しました。中小企業のAI導入・AI活用支援を、相談・設計・試作・定着まで基本的に本人が直接対応します。実装ではAI駆動開発を前提に、短いサイクルで試作と改善を回します。</p>
           <ul class="profile-facts">
             <li>製造業・建設業の現場出身。中小企業の業務感覚を踏まえて支援します</li>
-            <li>エンジニア歴4年。製造・物流・自動車業界向けモバイルアプリの開発・保守を担当</li>
-            <li>クラウド基盤の運用経験。社内データの扱いにも配慮して設計します</li>
+            <li>エンジニア歴約4年。製造・物流・自動車・金融向けモバイルアプリの開発・保守を担当</li>
+            <li>クラウド運用の経験あり。社内データの扱いにも配慮して設計します</li>
+            <li>AI駆動開発で設計から実装までを短サイクルで進めます</li>
             <li>スクラムマスター資格（RSM / PSM I）を保有。社内に定着する進め方を整えます</li>
           </ul>
+          <div class="profile-career">
+            <h3 class="profile-career-title">これまでの業務経験</h3>
+            <ol class="career-timeline">
+              <li>
+                <span class="career-period">2026年5月〜現在</span>
+                <h4>独立｜AI導入支援・AI駆動開発</h4>
+                <p>中小企業向けに、AI導入・生成AI活用・業務改善を相談から定着まで伴走。Web制作やシステム開発も、AI駆動開発で設計から実装まで一貫して進めます。</p>
+              </li>
+              <li>
+                <span class="career-period">2025年8月〜2026年4月</span>
+                <h4>クラウド運用（SREチーム）</h4>
+                <p>受託開発案件のクラウド運用、監視設定、インシデント対応の流れをキャッチアップ。アプリ側の観点も踏まえて状況整理を行い、運用に耐える設計の感覚を磨きました。</p>
+              </li>
+              <li>
+                <span class="career-period">2022年10月〜2025年7月</span>
+                <h4>モバイルアプリ開発・スクラム改善</h4>
+                <p>製造・物流・自動車・金融領域のモバイルアプリ開発に従事。要件の整理から実装・テスト・顧客折衝まで担当しました。</p>
+                <ul>
+                  <li>製造・物流向け管理アプリ：唯一のモバイル担当として、滞積した不具合の解消と技術負債の段階的な改善、顧客との優先度調整</li>
+                  <li>車検証デジタル化アプリ：画像アップロード、マイナンバーカード読み取り（NFC）など端末連携機能の実装</li>
+                  <li>金融系明細アプリ：開発に加えスクラム改善を担当。レトロスペクティブ導入やデイリーの再設計に関わり、スプリントゴール達成率100%に貢献</li>
+                  <li>受託案件のPMO／テスター：顧客と開発チームの橋渡し、オフショア含む認識齟齬の予防</li>
+                </ul>
+              </li>
+              <li>
+                <span class="career-period">2013年5月〜2022年7月</span>
+                <h4>製造・建設などの現場業務（約9年）</h4>
+                <p>エンジニア転向前に、現場の進捗管理・作業割り振り・安全管理を中心に経験しました。中小企業の「毎週くり返す業務」や現場感覚は、この期間が土台です。</p>
+                <ul>
+                  <li>精密金属部品の製造・加工と、チームへの作業割り振り・進捗管理</li>
+                  <li>橋梁補修・老朽構造物の解体、建築物内装材の解体工事</li>
+                  <li>小売現場での商品加工・陳列、青果の発注管理</li>
+                  <li>プログラミング研修でJava・SQLの基礎を習得し、ITへ転身</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
           <div class="profile-links">
             <a href="https://x.com/motoki0418" target="_blank" rel="noopener" class="profile-link">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
