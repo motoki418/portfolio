@@ -1,0 +1,61 @@
+name: Deploy drift guard
+
+# 「main にマージされたのに本番デプロイが発火しなかった」取りこぼしを、
+# 原因を問わず検出して自己修復する安全網。
+# scheduled イベントはコミットメッセージの CI-skip magic string の影響を受けない
+# （＝squash 本文への skip token 混入で push デプロイがスキップされても、この guard は必ず走る）。
+on:
+  schedule:
+    - cron: '17 * * * *'   # 毎時17分（分をずらして他ジョブと衝突回避）。頻度は必要に応じて調整可
+  workflow_dispatch:
+
+# 直列化のみ。取りこぼし前提なので古い run は kill しない。
+concurrency:
+  group: deploy-drift-guard-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write   # ドリフト時に Deploy を workflow_dispatch するため
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: main HEAD に成功した Deploy run があるか確認し、無ければ自己修復
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          HEAD_SHA="$(git rev-parse HEAD)"
+          echo "main HEAD = $HEAD_SHA"
+
+          # この SHA に対する Deploy(deploy.yml) の run を抽出（push でも workflow_dispatch でも headSha は一致する）
+          RUNS="$(gh run list --workflow=deploy.yml --branch=main --limit 50 \
+                    --json headSha,status,conclusion \
+                    --jq "[.[] | select(.headSha==\"$HEAD_SHA\")]")"
+
+          TOTAL="$(echo "$RUNS" | jq 'length')"
+          OK="$(echo "$RUNS" | jq '[.[] | select(.conclusion=="success" or .status=="queued" or .status=="in_progress")] | length')"
+
+          if [ "$OK" -ge 1 ]; then
+            echo "OK: main HEAD ($HEAD_SHA) は Deploy が成功済み or 実行中。ドリフトなし。"
+            exit 0
+          fi
+
+          if [ "$TOTAL" -ge 1 ]; then
+            # HEAD 用の Deploy run はあるが全て失敗/キャンセル → 再ディスパッチはループを招くのでアラートのみ
+            echo "::error::main HEAD ($HEAD_SHA) の Deploy run は存在するが成功していません（失敗/キャンセル）。自動再実行はせず通知します。deploy.yml のログを確認してください。"
+            exit 1
+          fi
+
+          # HEAD 用の Deploy run が一切ない = push トリガが発火しなかった取りこぼし → 自己修復
+          echo "::warning::main HEAD ($HEAD_SHA) に対する Deploy run が存在しません（push デプロイの取りこぼしの可能性）。deploy.yml を自己修復ディスパッチします。"
+          gh workflow run deploy.yml --ref main
+          echo "::error::Deploy ドリフトを検出し deploy.yml を再ディスパッチしました（SHA $HEAD_SHA）。次回の guard 実行で緑化を確認します。"
+          exit 1

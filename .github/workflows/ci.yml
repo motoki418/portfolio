@@ -44,3 +44,7 @@ jobs:
             grep -q '</html>' "$html" || { echo "::error::$html が </html> で閉じていません"; exit 1; }
           done
           echo "OK: dist の必須ファイルと HTML 構造を確認"
+
+      # 自動コミット step への CI-skip magic string 混入を決定論で拒否（deploy 取りこぼし再発防止）
+      - name: Guard auto-commit steps (no CI-skip magic string)
+        run: bash scripts/guard-no-skipci-in-commit-steps.sh

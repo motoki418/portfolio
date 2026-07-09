@@ -59,3 +59,23 @@
 - `git push --force` および画像ファイル削除は明示承認なしで実行しない
 - CSSの既存デザイントークン（`--ink`, `--accent`, `--surface` 系）を優先して使う
 - 過度な構造変更（外部CSS化、フレームワーク導入、ビルドツール追加）は提案ベースで、実装前に必ず相談する
+
+## CI / branch protection の注意（2026-07-09）
+
+### 必須チェックが "Expected" のまま固まってマージ不能になる主因
+GitHub は **PR の HEAD コミットメッセージ** に次のいずれかが含まれると、`pull_request` / `push` の workflow を**一切起動しない**（公式: Skipping workflow runs）:
+
+- `[skip ci]` / `[ci skip]` / `[no ci]` / `[skip actions]` / `[actions skip]`
+
+説明文として書いても同じ。必須ステータスチェック（`e2e` / `visual` / `Build and verify static site`）は status 未報告のまま "Expected" になり、`enforce_admins=true` だと admin マージも不可。
+
+実害例: drift-guard 追加 PR（#51）の HEAD に説明として上記 magic string が入り CI 0 run。一方 workflow のみの #45（secret-scan 追加）は通常どおり発火・マージ済み → **「workflow のみ変更だから発火しない」ではない**。
+
+### ルール
+1. **CI を回したい PR のコミットメッセージに上記 magic string を書かない**（説明は「CI-skip magic string」「skip token」など別表記にする）。
+2. 自動コミット step（`update-visual-baselines.yml` 等）にも付けない。`scripts/guard-no-skipci-in-commit-steps.sh` が CI で検査する。
+3. squash 設定は `PR_BODY` 固定（ブランチ側の skip token が main 本文へ集約されないため）。
+4. 取りこぼし安全網: `deploy-drift-guard.yml`（scheduled。コミットメッセージの skip token の影響を受けない）。
+
+関連 beads: `nakamuramotoki-i04a`
+
