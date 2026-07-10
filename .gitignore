@@ -37,3 +37,8 @@ node_modules/
 
 # Playwright のビジュアル基準画像（上の *.png 除外を打ち消して追跡する）
 !tests/**/*.png
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
