@@ -2,7 +2,7 @@
 
 ## このディレクトリの境界
 
-**役割: 対外公開の営業LP とサンプルサイト**。Cloudflare Pages で公開する本番資材のみ置く。
+**役割: 対外公開の営業LP とサンプルサイト**。Cloudflare Workers（static assets）で公開する本番資材のみ置く。
 
 > 判定基準: 見込み顧客が直接見る公開物か？
 >
@@ -15,15 +15,18 @@
 中村元揮（札幌・エンジニア）の個人ビジネスポートフォリオサイト。
 札幌でWeb制作・Web予約・AI業務改善を提供するサービスのLP。
 
-- 本番URL: https://katachi-ai.com/ （正規URL。外部掲載はすべてこれに統一）
-- katachi-ai.jp / www.katachi-ai.jp は https://katachi-ai.com へ 301 リダイレクト（ブランド保護用・Cloudflare Redirect Rule、パス・クエリ保持）
-- 配信: Cloudflare Pages（GitHub 連携時は `main` ブランチへの push が本番反映トリガー）
-- 推奨設定: Framework preset は `None`、Production branch は `main`、Build command は `sh scripts/build-cloudflare-pages.sh`、Build output directory は `dist`
+- 本番URL: https://katachi-ai.com/ （正規URL。SNS・名刺・QR・メール署名など外部掲載はすべてこれに統一）
+- katachi-ai.jp / www.katachi-ai.jp はブランド保護用。Cloudflare の Redirect Rule で https://katachi-ai.com へ 301 リダイレクト（パス・クエリ保持）。.jp 側にコンテンツは置かない
+- 旧URL https://ai-advisory-hokkaido.pages.dev/ は移行前の Cloudflare Pages のデフォルトドメイン（残存。新規掲載には使わない）
+- 配信: Cloudflare Workers（static assets）。設定は `wrangler.jsonc`。`main` への push を `.github/workflows/deploy.yml`（`wrangler deploy`）が拾って本番反映する。手動デプロイは `npx wrangler deploy`
+- ビルド: `wrangler deploy` が `wrangler.jsonc` の `build.command`（`sh scripts/build-cloudflare-pages.sh`）を自動実行して `dist/` を生成・アップロードする。出力先は `dist`
+- 自動デプロイの有効化に必要: リポジトリ Secrets に `CLOUDFLARE_API_TOKEN`（Workers Scripts:Edit 権限）。未設定の間 deploy.yml はスキップ動作（main は赤くならない）
+- 旧 Pages（`ai-advisory-hokkaido`）からの移行は GitHub Flow で `wrangler.jsonc` を main に載せた時点でリポジトリ側は完了。旧 Pages プロジェクトの独自ドメイン剥がし／GitHub 連携 OFF はオーナー承認のうえ実施する（本番ドメインに触るため）
 - 公開LPのため、文言・価格・画像・計測タグの変更は見込み顧客に直接影響する本番変更として扱う
 
 ## 技術スタック
 
-- 素の HTML / CSS / JavaScript（ビルドツール・パッケージマネージャなし。Cloudflare Pages 用の `dist/` 作成のみシェルスクリプトで行う）
+- 素の HTML / CSS / JavaScript（ビルドツール・パッケージマネージャなし）
 - Google Fonts（Noto Sans JP, Sora）を CDN 経由で読込
 - Google Analytics (gtag) 導入済み（測定ID `G-KV15FJJDYL`）
 
@@ -35,7 +38,13 @@
 - `favicon.svg`, `sitemap.xml`, `robots.txt`
 - `profile.png` — プロフィール画像（`.gitignore` の `!profile.png` で例外許可）
 - 他の `*.png` はスクリーンショット等で `.gitignore` により除外される
-- `scripts/build-cloudflare-pages.sh` — Cloudflare Pages の公開対象だけを `dist/` にコピーする
+- `scripts/build-cloudflare-pages.sh` — Cloudflare 配信の公開対象だけを `dist/` にコピーする（`wrangler.jsonc` の `build.command` から呼ばれる）
+
+## デザイン規約
+
+デザインの正本はこのリポジトリ直下の `DESIGN.md`。
+カラートークン・タイポグラフィ・コンポーネントパターン・DO/DON'T はそちらを参照すること。
+なお `~/apps/DESIGN.md` は apps 配下の業務ツール向け共通基準であり、本LPには適用しない。
 
 ## 開発規約
 
@@ -45,7 +54,7 @@
 - **日本語LP**：文言変更時は敬語レベルと語尾の統一感を崩さない
 - **画像追加**：`.gitignore` が `*.png` を除外しているので、本番で使う画像は `!filename.png` を追加する必要あり
 
-## Codex への指示
+## 各エージェント共通の作業ルール
 
 - 作業開始時に必ず `git status --short --branch` を実行し、ブランチ・ahead/behind・dirty差分・未追跡ファイルを確認する
 - ユーザー既存のdirty差分や未追跡ファイルは、明示指示なしに編集・整形・削除・revertしない。必要な変更が既存dirtyファイルと重なる場合は、先に差分を読んで最小限の追記に留める
@@ -53,11 +62,30 @@
 - `git reset --hard`、`git checkout -- <path>`、`git clean`、`rm -rf`、画像ファイル削除など破壊的なGit操作・削除操作は、明示承認なしに実行しない
 - 変更前に `git diff` で意図しない差分がないか確認する
 - コミット前に index.html をブラウザで開いて実機確認する（プレビューツールがあれば活用）
-- `main` への push は Cloudflare Pages の本番反映トリガーになるため、明示承認なしで実行しない
+- `main` への push は本番反映トリガーになるため、明示承認なしで実行しない
 - `git push --force`、画像ファイル削除、Google Analytics タグ変更・削除、公開文言の大幅変更、価格・問い合わせ導線の変更は明示承認なしで実行しない
 - 静的HTMLとして成立することを確認する。`index.html` 変更時はブラウザ表示、主要セクション、レスポンシブ、構造化データの破損有無を確認する
 - CSSの既存デザイントークン（`--ink`, `--accent`, `--surface` 系）を優先して使う
 - 過度な構造変更（外部CSS化、フレームワーク導入、ビルドツール追加）は提案ベースで、実装前に必ず相談する
+
+## CI / branch protection の注意（2026-07-09）
+
+### 必須チェックが "Expected" のまま固まってマージ不能になる主因
+GitHub は **PR の HEAD コミットメッセージ** に次のいずれかが含まれると、`pull_request` / `push` の workflow を**一切起動しない**（公式: Skipping workflow runs）:
+
+- `[skip ci]` / `[ci skip]` / `[no ci]` / `[skip actions]` / `[actions skip]`
+
+説明文として書いても同じ。必須ステータスチェック（`e2e` / `visual` / `Build and verify static site`）は status 未報告のまま "Expected" になり、`enforce_admins=true` だと admin マージも不可。
+
+実害例: drift-guard 追加 PR（#51）の HEAD に説明として上記 magic string が入り CI 0 run。一方 workflow のみの #45（secret-scan 追加）は通常どおり発火・マージ済み → **「workflow のみ変更だから発火しない」ではない**。
+
+### ルール
+1. **CI を回したい PR のコミットメッセージに上記 magic string を書かない**（説明は「CI-skip magic string」「skip token」など別表記にする）。
+2. 自動コミット step（`update-visual-baselines.yml` 等）にも付けない。`scripts/guard-no-skipci-in-commit-steps.sh` が CI で検査する。
+3. squash 設定は `PR_BODY` 固定（ブランチ側の skip token が main 本文へ集約されないため）。
+4. 取りこぼし安全網: `deploy-drift-guard.yml`（scheduled。コミットメッセージの skip token の影響を受けない）。
+
+関連 beads: `nakamuramotoki-i04a`
 
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
 ## Beads Issue Tracker
