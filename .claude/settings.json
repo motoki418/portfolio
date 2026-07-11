@@ -1,5 +1,41 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "FILE=$(jq -r '.tool_input.file_path // empty'); case \"$FILE\" in *.html) npx -y html-validate \"$FILE\" 2\u003e\u00261 | tail -20;; esac; true",
+            "timeout": 60,
+            "type": "command"
+          }
+        ],
+        "matcher": "Write|Edit"
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "command": "bd prime",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bd prime",
+            "type": "command"
+          }
+        ],
+        "matcher": ""
+      }
+    ]
+  },
   "permissions": {
     "deny": [
       "Read(.env*)",
@@ -22,20 +58,6 @@
       "Bash(git push origin master*)",
       "Bash(git push origin HEAD:main*)",
       "Bash(git push origin HEAD:master*)"
-    ]
-  },
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "FILE=$(jq -r '.tool_input.file_path // empty'); case \"$FILE\" in *.html) npx -y html-validate \"$FILE\" 2>&1 | tail -20;; esac; true",
-            "timeout": 60
-          }
-        ]
-      }
     ]
   }
 }

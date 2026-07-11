@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "katachi",
+  "project_id": "94827288-31cb-4ce0-8f66-e00dea7c70fe"
+}
