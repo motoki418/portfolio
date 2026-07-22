@@ -28,7 +28,7 @@
 
 - 素の HTML / CSS / JavaScript（ビルドツール・パッケージマネージャなし）
 - Google Fonts（Noto Sans JP, Sora）を CDN 経由で読込
-- Google Analytics (gtag) 導入済み（測定ID `G-KV15FJJDYL`）
+- Google Analytics (gtag) 導入済み（測定ID `G-DNCMC8QGMV`。旧記載の `G-KV15FJJDYL` は GA4 上に実在しない孤立IDだった＝2026-07-21 GA4 管理画面で実確認）
 
 ## 構成
 
