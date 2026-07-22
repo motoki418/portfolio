@@ -36,4 +36,28 @@ test.describe('katachi-ai LP — ビジュアル回帰', () => {
     await freeze(page);
     await expect(page.locator('#pricing')).toHaveScreenshot('pricing.png');
   });
+
+  test('研修概要セクション（新設）', async ({ page }) => {
+    await page.goto('/#training-intro');
+    await freeze(page);
+    await expect(page.locator('#training-intro')).toHaveScreenshot('training-intro.png');
+  });
+
+  test('法人向けAI研修ページ フルページ', async ({ page }) => {
+    await page.goto('/training/');
+    await freeze(page);
+    await expect(page).toHaveScreenshot('training-full-page.png', { fullPage: true });
+  });
+
+  test('AI業務自動化サービスページ フルページ', async ({ page }) => {
+    await page.goto('/services/ai-workflow-automation/');
+    await freeze(page);
+    await expect(page).toHaveScreenshot('services-ai-workflow-automation-full-page.png', { fullPage: true });
+  });
+
+  test('運営者情報ページ フルページ', async ({ page }) => {
+    await page.goto('/about/');
+    await freeze(page);
+    await expect(page).toHaveScreenshot('about-full-page.png', { fullPage: true });
+  });
 });

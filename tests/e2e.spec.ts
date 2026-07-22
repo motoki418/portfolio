@@ -59,4 +59,52 @@ test.describe('katachi-ai LP — 主要導線E2E', () => {
     await expect(page).toHaveURL(/#contact$/);
     await expect(page.locator('#contact')).toBeVisible();
   });
+
+  test('ヘッダーナビから新規ページ（研修）へ遷移できる', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'モバイルはヘッダーナビ非表示の既存仕様（.header-nav a:not(.nav-cta) { display: none }）');
+    await page.locator('.header-nav a[href="/training/"]').click();
+    await expect(page).toHaveURL(/\/training\/$/);
+    await expect(page.locator('h1')).toBeVisible();
+  });
+
+  test('本文・フッターから新規ページ（サービス/運営者情報）へ遷移できる', async ({ page }) => {
+    await page.locator('#development a[href="/services/ai-workflow-automation/"]').click();
+    await expect(page).toHaveURL(/\/services\/ai-workflow-automation\/$/);
+    await expect(page.locator('h1')).toBeVisible();
+
+    await page.goto('/');
+    await page.locator('.profile-links a[href="/about/"]').click();
+    await expect(page).toHaveURL(/\/about\/$/);
+    await expect(page.locator('h1')).toBeVisible();
+  });
+});
+
+/**
+ * 新規ページ（研修/サービス/運営者情報）の主要導線E2E。
+ * トップと同様、フォームは実送信しない。
+ */
+test.describe('katachi-ai LP — 新規ページE2E（training / services / about）', () => {
+  const newPages: Array<{ path: string; canonical: string }> = [
+    { path: '/training/', canonical: 'https://katachi-ai.com/training/' },
+    { path: '/services/ai-workflow-automation/', canonical: 'https://katachi-ai.com/services/ai-workflow-automation/' },
+    { path: '/about/', canonical: 'https://katachi-ai.com/about/' },
+  ];
+
+  for (const { path, canonical } of newPages) {
+    test(`${path} — H1が1つ・canonicalが自己参照・CTAリンクが存在する`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page.locator('h1')).toHaveCount(1);
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', canonical);
+      await expect(page.locator('a.btn-primary').first()).toBeVisible();
+    });
+
+    test(`${path} — モバイル幅(390px)で横スクロールが発生しない`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(path);
+      const hasHorizontalScroll = await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1
+      );
+      expect(hasHorizontalScroll).toBe(false);
+    });
+  }
 });

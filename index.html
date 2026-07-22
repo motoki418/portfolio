@@ -225,9 +225,9 @@
         { "@type": "Question", "name": "中小企業でもAI導入・AI活用は進められますか？", "acceptedAnswer": { "@type": "Answer", "text": "進められます。大きなシステム開発を前提にせず、まず1業務から小さく始めます。問い合わせ対応、見積・提案準備、社内確認など、日常的に時間がかかっている業務を題材にすると進めやすいです。" } },
         { "@type": "Question", "name": "札幌・北海道以外からでも相談できますか？", "acceptedAnswer": { "@type": "Answer", "text": "オンラインで全国対応できます。札幌・北海道を拠点にしていますが、初回相談、現状整理、設計、試作、定着支援はオンラインでも進められます。" } },
         { "@type": "Question", "name": "具体的には何をしてくれますか？", "acceptedAnswer": { "@type": "Answer", "text": "相談、設計、試作、定着まで一緒に進めます。何から始めるかを整理し、業務に合わせた使い方を決め、小さく試せる形を作り、社内で使われる状態まで見直します。" } },
-        { "@type": "Question", "name": "研修だけ、または相談だけでも依頼できますか？", "acceptedAnswer": { "@type": "Answer", "text": "可能です。ただし、研修だけで終わるより、実際の業務に当てはめて使い方を決める方が社内で定着しやすくなります。必要な範囲は初回相談で確認します。" } },
+        { "@type": "Question", "name": "研修だけ、または相談だけでも依頼できますか？", "acceptedAnswer": { "@type": "Answer", "text": "はい、可能です。相談のみのご依頼はもちろん、基礎から実践までの社内研修だけをご依頼いただくこともできます（研修の内容・時間・料金の目安は研修ページをご覧ください）。学んだ内容を実際の業務に当てはめて定着まで進めたい場合は、研修のあとに伴走支援へ進むこともできます。" } },
         { "@type": "Question", "name": "AIエージェントや簡易ツールの試作もできますか？", "acceptedAnswer": { "@type": "Answer", "text": "できます。最初から大きな開発にせず、対象業務を絞って小さく試します。文案作成、情報整理、通知、転記、社内確認など、業務の一部を軽くする試作から始めます。" } },
-        { "@type": "Question", "name": "研修会社やセミナーとの違いは？", "acceptedAnswer": { "@type": "Answer", "text": "御社の業務に当てはめた設計・試作・定着まで伴走します。研修は汎用的な内容になりがちですが、こちらは毎週くり返している業務を1つ選び、社内で使われる手順とテンプレートを一緒に整えます。" } },
+        { "@type": "Question", "name": "研修会社やセミナーとの違いは？", "acceptedAnswer": { "@type": "Answer", "text": "研修だけで終わらせない設計をしています。当社の研修も御社の実業務に沿った実践型ですが、一般的な研修会社やセミナーとの大きな違いは、研修のあとに実際の業務へ組み込むところまで一緒に進められる点です。毎週くり返している業務を1つ選び、社内で使われる手順とテンプレートまで整えます。" } },
         { "@type": "Question", "name": "ITベンダーへの丸投げとの違いは？", "acceptedAnswer": { "@type": "Answer", "text": "最初から大きな開発を前提にしません。現場の担当者と一緒に、何をAIに任せて何を人が確認するかを決め、小さく試せる形から進めます。必要な範囲だけを段階的に広げます。" } },
         { "@type": "Question", "name": "ChatGPTを社内で使うだけとの違いは？", "acceptedAnswer": { "@type": "Answer", "text": "ツールを入れるだけでは定着しにくい場面があります。利用ルール、確認手順、使ってよい業務範囲を決め、実際の業務フローに組み込むところまで支援します。" } },
         { "@type": "Question", "name": "初回相談は無料ですか？", "acceptedAnswer": { "@type": "Answer", "text": "はい。初回相談は1時間無料です。現状、気になっている業務、AIで試したいことを確認し、有料支援が必要かどうかも含めて整理します。" } },
@@ -1056,6 +1056,9 @@ section { padding: 104px 0; }
   .dev-grid { grid-template-columns: 1fr; }
 }
 
+/* ── 法人向けAI研修（概要） ── */
+.training-intro-section { background: var(--surface); }
+
 /* ── 補助金活用 ── */
 .subsidy-section { background: var(--surface); }
 
@@ -1666,6 +1669,7 @@ section { padding: 104px 0; }
       <a href="#pricing">料金</a>
       <a href="#development">開発</a>
       <a href="#subsidy">補助金</a>
+      <a href="/training/">AI研修</a>
       <a href="#contact" class="nav-cta">相談する</a>
     </nav>
   </div>
@@ -1925,7 +1929,7 @@ section { padding: 104px 0; }
       <div class="pricing-card reveal reveal-delay-1">
         <p class="pricing-card-label">AI</p>
         <h3>AIを組み込んだシステム開発</h3>
-        <p>チャットボット、社内文書検索、業務エージェントなど、生成AIを業務に組み込みます。</p>
+        <p>チャットボット、社内文書検索、業務エージェントなど、生成AIを業務に組み込みます。<a href="/services/ai-workflow-automation/">詳しく見る →</a></p>
         <p class="pricing-price">120万円〜（税別）</p>
       </div>
       <div class="pricing-card reveal reveal-delay-2">
@@ -1985,7 +1989,22 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 7. 補助金活用 ── -->
+<!-- ── 7. 法人向けAI研修 ── -->
+<section class="training-intro-section" id="training-intro">
+  <div class="container">
+    <div class="text-center">
+      <span class="section-label reveal">法人向けAI研修</span>
+      <h2 class="section-title reveal">社員がAIに仕事を任せられるようになる、<br>実践10時間</h2>
+    </div>
+    <p class="section-lead text-center mx-auto reveal">御社の実業務を題材にした、少人数・実践型の研修です。座学だけで終わらせず、実際にAIへ仕事を任せられる状態まで一緒に進めます。研修のあと業務への定着まで進めたい場合は、伴走支援へ続けることもできます。</p>
+    <p class="pricing-note reveal">実践10時間・60万円〜（税別・内容/人数で個別見積り）<br><strong>補助金を活用すれば、実質負担を抑えられる場合があります（要件あり）</strong></p>
+    <div class="pricing-cta reveal">
+      <a href="/training/" class="btn-primary">研修の内容を見る</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── 8. 補助金活用 ── -->
 <section class="subsidy-section" id="subsidy">
   <div class="container">
     <div class="text-center">
@@ -2034,6 +2053,8 @@ section { padding: 104px 0; }
 
     <p class="subsidy-support-note reveal">御社が補助金でAIツールを導入しやすいよう、「IT導入支援事業者」としての対応も前向きに検討しています。制度に合わせて、補助対象になる費用（ツール導入・開発）と、月額の伴走支援を明確に切り分けてご案内します。</p>
 
+    <p class="subsidy-support-note reveal">法人向けのAI研修費についても、北海道「賃上げ環境整備補助金2026」など、対象になり得る制度がある場合があります（要件あり）。実質負担の試算例は<a href="/training/">AI研修ページ</a>でご確認いただけます。</p>
+
     <div class="subsidy-disclaimer reveal">
       <p class="subsidy-disclaimer-title">補助金活用についてのご注意</p>
       <ul>
@@ -2052,7 +2073,7 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 8. FAQ ── -->
+<!-- ── 9. FAQ ── -->
 <section class="faq-section" id="faq">
   <div class="container">
     <div class="text-center">
@@ -2113,7 +2134,7 @@ section { padding: 104px 0; }
               <span class="faq-icon" aria-hidden="true"></span>
             </button>
             <div class="faq-a">
-              <p class="faq-a-inner">可能です。ただし、研修だけで終わるより、実際の業務に当てはめて使い方を決める方が社内で定着しやすくなります。必要な範囲は初回相談で確認します。</p>
+              <p class="faq-a-inner">はい、可能です。相談のみのご依頼はもちろん、基礎から実践までの社内研修だけをご依頼いただくこともできます（研修の内容・時間・料金の目安は研修ページをご覧ください）。学んだ内容を実際の業務に当てはめて定着まで進めたい場合は、研修のあとに伴走支援へ進むこともできます。</p>
             </div>
           </div>
           <div class="faq-item">
@@ -2131,7 +2152,7 @@ section { padding: 104px 0; }
               <span class="faq-icon" aria-hidden="true"></span>
             </button>
             <div class="faq-a">
-              <p class="faq-a-inner">御社の業務に当てはめた設計・試作・定着まで伴走します。研修は汎用的な内容になりがちですが、こちらは毎週くり返している業務を1つ選び、社内で使われる手順とテンプレートを一緒に整えます。</p>
+              <p class="faq-a-inner">研修だけで終わらせない設計をしています。当社の研修も御社の実業務に沿った実践型ですが、一般的な研修会社やセミナーとの大きな違いは、研修のあとに実際の業務へ組み込むところまで一緒に進められる点です。毎週くり返している業務を1つ選び、社内で使われる手順とテンプレートまで整えます。</p>
             </div>
           </div>
           <div class="faq-item">
@@ -2225,7 +2246,7 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 9. プロフィール ── -->
+<!-- ── 10. プロフィール ── -->
 <section class="profile-section" id="profile">
   <div class="container">
     <div class="text-center">
@@ -2286,6 +2307,7 @@ section { padding: 104px 0; }
             </ol>
           </div>
           <div class="profile-links">
+            <a href="/about/" class="profile-link">運営者情報を見る</a>
             <a href="https://x.com/motoki0418" target="_blank" rel="noopener" class="profile-link">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               @motoki0418
@@ -2301,7 +2323,7 @@ section { padding: 104px 0; }
   </div>
 </section>
 
-<!-- ── 10. 問い合わせ ── -->
+<!-- ── 11. 問い合わせ ── -->
 <section class="contact-section" id="contact">
   <div class="container">
     <div class="contact-inner">
