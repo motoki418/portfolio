@@ -108,3 +108,118 @@ test.describe('katachi-ai LP — 新規ページE2E（training / services / abou
     });
   }
 });
+
+/**
+ * 構造化データ（JSON-LD）のエンティティ整合ガード。
+ *
+ * 検索エンジンとAIに「中村元揮＝この事業」を一つの実体として読ませるための錠前。
+ * インラインJSONの手編集はカンマ1つで全滅するうえ、@id の参照切れや sameAs の
+ * コピー間ドリフトは画面上まったく見えないため、壊れたら必ず落ちる形で固定する。
+ */
+const ENTITY_PAGES = ['/', '/about/', '/training/', '/services/ai-workflow-automation/'];
+const PERSON_ID = 'https://katachi-ai.com/#person';
+const BUSINESS_ID = 'https://katachi-ai.com/#business';
+
+type JsonLdNode = Record<string, any>;
+
+/** @graph をほどいてノードの配列にする（@graph を持たない単体JSON-LDも許容） */
+function flattenGraph(docs: JsonLdNode[]): JsonLdNode[] {
+  return docs.flatMap((doc) => (Array.isArray(doc['@graph']) ? doc['@graph'] : [doc]));
+}
+
+/** 再帰的に走査し、{"@id": "..."} だけのオブジェクト（＝他ノードへの参照）を集める */
+function collectRefs(value: unknown, found: string[] = []): string[] {
+  if (Array.isArray(value)) {
+    for (const item of value) collectRefs(item, found);
+  } else if (value && typeof value === 'object') {
+    const obj = value as JsonLdNode;
+    const keys = Object.keys(obj);
+    if (keys.length === 1 && keys[0] === '@id' && typeof obj['@id'] === 'string') {
+      found.push(obj['@id']);
+    } else {
+      for (const child of Object.values(obj)) collectRefs(child, found);
+    }
+  }
+  return found;
+}
+
+async function readNodes(page: import('@playwright/test').Page, path: string): Promise<JsonLdNode[]> {
+  await page.goto(path);
+  const blocks = await page.locator('script[type="application/ld+json"]').allTextContents();
+  expect(blocks.length, `${path} に JSON-LD ブロックが無い`).toBeGreaterThan(0);
+  const docs = blocks.map((text, i) => {
+    try {
+      return JSON.parse(text) as JsonLdNode;
+    } catch (e) {
+      throw new Error(`${path} の JSON-LD[${i}] がパースできない: ${(e as Error).message}`);
+    }
+  });
+  return flattenGraph(docs);
+}
+
+test.describe('構造化データ — エンティティ整合ガード', () => {
+  for (const path of ENTITY_PAGES) {
+    test(`${path} — JSON-LDがパースでき、@id参照が全て同一ページ内で解決する`, async ({ page }) => {
+      const nodes = await readNodes(page, path);
+      const definedIds = new Set(
+        nodes.filter((n) => typeof n['@id'] === 'string' && n['@type']).map((n) => n['@id'] as string)
+      );
+      const dangling = [...new Set(collectRefs(nodes))].filter((id) => !definedIds.has(id));
+      expect(
+        dangling,
+        `参照先が未定義の @id（provider や isPartOf が実体に解決できず、誰が提供する何かが機械可読にならない）`
+      ).toEqual([]);
+    });
+  }
+
+  test('#person と #business が全ページで同じ @type・同じ sameAs を持つ', async ({ page }) => {
+    const typeById = new Map<string, string>();
+    const sameAsById = new Map<string, string>();
+
+    for (const path of ENTITY_PAGES) {
+      for (const node of await readNodes(page, path)) {
+        const id = node['@id'];
+        if (typeof id !== 'string' || !node['@type']) continue;
+
+        const type = String(node['@type']);
+        const knownType = typeById.get(id);
+        if (knownType === undefined) typeById.set(id, type);
+        else expect(type, `${id} の @type が ${path} で食い違う`).toBe(knownType);
+
+        if (node.sameAs) {
+          const sameAs = JSON.stringify(node.sameAs);
+          const knownSameAs = sameAsById.get(id);
+          if (knownSameAs === undefined) sameAsById.set(id, sameAs);
+          else expect(sameAs, `${id} の sameAs が ${path} で食い違う`).toBe(knownSameAs);
+        }
+      }
+    }
+
+    expect(typeById.get(PERSON_ID), '#person の @type が Person でない').toBe('Person');
+    expect(typeById.get(BUSINESS_ID), '#business の @type が ProfessionalService でない').toBe(
+      'ProfessionalService'
+    );
+
+    const personSameAs = sameAsById.get(PERSON_ID);
+    const businessSameAs = sameAsById.get(BUSINESS_ID);
+    expect(personSameAs, '#person に sameAs が無い').toBeTruthy();
+    expect(businessSameAs, '#business に sameAs が無い').toBeTruthy();
+    expect(businessSameAs, '#person と #business の sameAs が不一致（片方だけ更新したドリフト）').toBe(
+      personSameAs
+    );
+  });
+
+  test('sameAs が本人所有のプロフィールだけを指す（他人アカウント混入の恒久ガード）', async ({ page }) => {
+    const nodes = await readNodes(page, '/');
+    const person = nodes.find((n) => n['@id'] === PERSON_ID);
+    const sameAs = (person?.sameAs ?? []) as string[];
+
+    // 本人アカウント（origin remote が motoki418/katachi-ai-lp であることが所有の根拠）
+    expect(sameAs).toContain('https://github.com/motoki418');
+    // github.com/MotokiNakamura は別人のアカウント。氏名が一致するため混入しやすい
+    expect(
+      sameAs.some((url) => /github\.com\/MotokiNakamura/i.test(url)),
+      '別人の GitHub アカウント(MotokiNakamura)が sameAs に混入している'
+    ).toBe(false);
+  });
+});
