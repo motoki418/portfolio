@@ -210,19 +210,21 @@ test.describe('構造化データ — エンティティ整合ガード', () => 
   });
 
   test('肩書が全ページ・全導線で正本と一致する（3種類に分裂していた経緯の再発ガード）', async ({ page }) => {
-    // 正本は「AI推進パートナー」。2026-07-25 時点でサイトのJSON-LDだけが
+    // 名乗りの正本は「AI推進パートナー」。2026-07-25 時点でサイトのJSON-LDだけが
     // 「AI導入支援・エンジニア」を名乗り、X表示名・問い合わせメールと食い違っていた。
-    const JOB_TITLE = 'AI推進パートナー';
+    // これに検索・AI回答で拾われる語として「AI導入支援」を併記する（2026-07-26 オーナー判断）。
+    // 順序まで固定するのは、ページ間で並びが割れると同一人物の肩書が2通りに見えるため。
+    const JOB_TITLES = ['AI推進パートナー', 'AI導入支援'];
 
     for (const path of ['/', '/about/']) {
       const person = (await readNodes(page, path)).find((n) => n['@id'] === PERSON_ID);
-      expect(person?.jobTitle, `${path} の jobTitle が正本と違う`).toBe(JOB_TITLE);
+      expect(person?.jobTitle, `${path} の jobTitle が正本と違う`).toEqual(JOB_TITLES);
     }
 
-    // 問い合わせメールの送信者名も同じ肩書で届く必要がある（受信側から見た名乗りの一致）
+    // 問い合わせメールの送信者名は、主たる名乗りと一致している必要がある（受信側から見た名乗りの一致）
     await page.goto('/');
     const fromName = await page.locator('input[name="from_name"]').getAttribute('value');
-    expect(fromName, '問い合わせフォームの送信者名に正本の肩書が入っていない').toContain(JOB_TITLE);
+    expect(fromName, '問い合わせフォームの送信者名に正本の肩書が入っていない').toContain(JOB_TITLES[0]);
   });
 
   test('sameAs が本人所有のプロフィールだけを指す（他人アカウント混入の恒久ガード）', async ({ page }) => {
