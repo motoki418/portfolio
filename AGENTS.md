@@ -87,6 +87,19 @@ GitHub は **PR の HEAD コミットメッセージ** に次のいずれかが�
 
 関連 beads: `nakamuramotoki-i04a`
 
+### 第2の主因: `update-visual-baselines.yml` の自動コミット後、CI が承認待ちで止まる（2026-07-26 実測）
+
+`update-visual-baselines.yml` を回すと `github-actions[bot]` が基準画像をブランチへ push する。
+このコミットに対する `pull_request` の run は **`action_required`（実行時間 0s）で作られ、承認するまで走らない**。
+`gh pr checks` は `no checks reported` を返し、必須チェックが揃わず `mergeStateStatus` は `BLOCKED` のままになる。
+
+- 症状の見分け方: `gh run list --branch <branch>` に conclusion `action_required` の run が並ぶ。
+  skip token 由来なら run 自体が 0 件なので、そこで区別できる。
+- 対処: `gh api -X POST repos/motoki418/katachi-ai-lp/actions/runs/<run_id>/approve` を対象 run
+  （`E2E & Visual` / `CI` / `Secret scan`）すべてに実行する。承認後は通常どおり走る。
+- **`maxDiffPixelRatio` を緩める・スナップショット対象を外すのは禁止**。ビジュアル差分が出たときの
+  正しい手順は基準画像の再生成であり、検査そのものを弱めない（`rules/security.md` の報酬ハッキング禁止）。
+
 <!-- BEGIN BEADS INTEGRATION v:1 profile:minimal hash:7510c1e2 -->
 ## Beads Issue Tracker
 
