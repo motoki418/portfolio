@@ -241,3 +241,70 @@ test.describe('構造化データ — エンティティ整合ガード', () => 
     ).toBe(false);
   });
 });
+
+/**
+ * 公開している主張（数値・条件）のページ間一貫性ガード。
+ *
+ * 同じ事例から違う数字が出る／同じ導線で違う条件を提示する、という食い違いは
+ * 画面上まったく目立たないまま本番に残り（bd katachi-fkc / katachi-5sr で実際に発生）、
+ * 読者にも AI 検索エンジンにも「どちらかが誤り」と読まれる。壊れたら必ず落ちる形で固定する。
+ * 換算基準の正本は docs/claims-basis.md。基準を変えるときは、正本 → このガード → 各ページの順で直す。
+ */
+test.describe('公開している主張の一貫性ガード', () => {
+  test('実績数値の換算が正本(年48稼働週)どおりで、月換算の過大表記が復活していない', async ({ page }) => {
+    await page.goto('/');
+    const roi = page.locator('.pricing-roi');
+
+    // 元数値（実測）: 週5時間 → 30分 ＝ 毎週4.5時間。年48稼働週 → 年216時間。
+    await expect(roi).toContainText('週5時間');
+    await expect(roi).toContainText('毎週4.5時間');
+    await expect(roi).toContainText('年間216時間');
+    await expect(roi, '換算基準の併記が消えると、試算値が実測値として読まれる').toContainText('年48稼働週');
+
+    // 52週基準ですら19.5時間で、「月20時間超」はどの基準でも導けない過大表記だった
+    await expect(roi).not.toContainText('月20時間');
+  });
+
+  test('無料相談の所要時間が全ページで1時間に揃っている', async ({ page }) => {
+    // 「初回1時間無料相談」「まずは1時間、無料相談から」など言い回しはページごとに違ってよい。
+    // 固定するのは所要時間そのもの。30分側の表記は、事例の「週5時間→30分」と衝突しないよう
+    // 相談の文脈（◯分相談 / まず◯分）に限って禁止する。
+    const STALE_DURATION = /30分(の)?(無料)?相談|まず30分/;
+
+    // 所要時間を明示している面。ここから時間の記載が消えるのも劣化なので、存在を要求する。
+    // リードマグネットは拡張子なしURLで公開されるが、テスト用の静的サーバは実ファイル名で配信する。
+    const pagesStatingDuration = [
+      '/',
+      '/about/',
+      '/services/ai-workflow-automation/',
+      '/downloads/ai-readiness-checklist.html',
+    ];
+    for (const path of pagesStatingDuration) {
+      await page.goto(path);
+      const body = await page.locator('body').innerText();
+      expect(body, `${path} に無料相談の所要時間表記が無い`).toMatch(/1時間/);
+      expect(body, `${path} に旧表記の30分相談が残っている`).not.toMatch(STALE_DURATION);
+    }
+
+    // /training/ は所要時間を書かず LP の #contact へ送る設計。時間を書かないのは許容するが、
+    // 書くなら1時間側でなければならない（30分表記の再流入だけを塞ぐ）。
+    await page.goto('/training/');
+    expect(await page.locator('body').innerText(), '/training/ に30分相談が入り込んでいる').not.toMatch(
+      STALE_DURATION
+    );
+  });
+
+  test('プライバシーポリシーがアクセス解析の外部送信とオプトアウトを開示している', async ({ page }) => {
+    // GA4 を全ページで稼働させている以上、送信情報・送信先・利用目的・停止方法の
+    // 開示が要る（電気通信事業法の外部送信規律）。診断セクションの公開前提でもある。
+    await page.goto('/privacy.html');
+    const body = await page.locator('body').innerText();
+    expect(body, '解析ツール名が書かれていない').toContain('Googleアナリティクス4');
+    expect(body, '計測IDが正本と違う／書かれていない').toContain('G-DNCMC8QGMV');
+    expect(body, 'Cookieの使用が書かれていない').toContain('Cookie');
+    expect(body, 'オプトアウト手段が案内されていない').toMatch(/オプトアウト|無効化/);
+
+    const optOut = page.locator('a[href="https://tools.google.com/dlpage/gaoptout"]');
+    await expect(optOut, 'オプトアウトアドオンへのリンクが無い').toHaveCount(1);
+  });
+});
