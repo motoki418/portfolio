@@ -520,3 +520,89 @@ test.describe('配布PDF — リンク先と表示テキストの検査', () => 
     }
   });
 });
+
+/**
+ * 公開HTMLへの死んだ旧ドメイン混入ガード。
+ *
+ * 配布PDFには同種の検査を入れたが（上の「配布PDF」describe）、そちらが見るのはPDF1本だけで、
+ * HTML側に同じ旧ドメインが混入しても何も言わない状態だった。実際に3ヶ月配布され続けた
+ * motoki418.github.io/portfolio（404）と ai-advisory-hokkaido.pages.dev（DNSごと消滅）は、
+ * どちらもドメイン移行時にHTMLだけを対象に置換した結果PDFに取り残されたもので、
+ * 逆向き（HTMLに混入する）も同じ確率で起こる。
+ */
+test.describe('公開HTML — 死んだ旧ドメインの混入ガード', () => {
+  // 公開対象のHTML。scripts/build-cloudflare-pages.sh が dist へコピーするもののうち HTML だけ。
+  // 公開物が増えたときにこの配列を更新し忘れると検査範囲が黙って狭まるため、下の本数検査で固定する。
+  const PUBLIC_HTML = [
+    'index.html',
+    'privacy.html',
+    'about/index.html',
+    'training/index.html',
+    'services/ai-workflow-automation/index.html',
+    'downloads/ai-readiness-checklist.html',
+    'samples/bonesetter/index.html',
+    'samples/clinic/index.html',
+    'samples/restaurant/index.html',
+  ];
+
+  /**
+   * 死んだ・使ってはいけないホスト。
+   *
+   * github\.io と github\.com を取り違えないこと。JSON-LD の sameAs にある
+   * https://github.com/motoki418 は本人アカウントで正常な値であり、
+   * 2026-07-25 の監査で実際に誤検知しかけている。
+   * ここを広げるときは「github」で雑に引っ掛けず、ホスト単位で足す。
+   */
+  const DEAD_HOSTS = [
+    { pattern: /motoki418\.github\.io/i, why: '旧ポートフォリオ。2026-07 時点で404' },
+    { pattern: /\bai-advisory-hokkaido\.pages\.dev/i, why: '旧Cloudflare Pages。DNSごと消滅（NXDOMAIN）' },
+    { pattern: /\bwww\.katachi-ai\.com/i, why: '正規URLは www なし' },
+    { pattern: /katachi-ai\.jp/i, why: 'ブランド保護用。301先であってコンテンツを置く先ではない' },
+  ];
+
+  test('公開HTMLの列挙が実態と一致する（増えたページが検査から漏れるのを防ぐ）', () => {
+    const root = process.cwd();
+    for (const file of PUBLIC_HTML) {
+      expect(existsSync(resolve(root, file)), `${file} が存在しない。列挙が実態とずれている`).toBe(true);
+    }
+    const distHtml = [
+      'index.html',
+      'privacy.html',
+      ...['about', 'training'].map((d) => `${d}/index.html`),
+      'services/ai-workflow-automation/index.html',
+      'downloads/ai-readiness-checklist.html',
+      ...['bonesetter', 'clinic', 'restaurant'].map((d) => `samples/${d}/index.html`),
+    ];
+    expect([...PUBLIC_HTML].sort(), '公開HTMLの列挙が実態と食い違う').toEqual(distHtml.sort());
+  });
+
+  for (const file of PUBLIC_HTML) {
+    test(`${file} に死んだ旧ドメインが無い`, () => {
+      const content = readFileSync(resolve(process.cwd(), file), 'utf-8');
+      // 抽出器の生死を先に確認する。空ファイルを読んでいると以下の検査は素通りする。
+      expect(content.length, `${file} が空。読み取りに失敗している`).toBeGreaterThan(500);
+
+      for (const { pattern, why } of DEAD_HOSTS) {
+        const hit = content.match(pattern);
+        expect(
+          hit,
+          `${file} に使ってはいけないホストがある: ${hit?.[0]}（${why}）\n` +
+            '正規URLは https://katachi-ai.com/ 。移行漏れの可能性が高い。'
+        ).toBeNull();
+      }
+    });
+  }
+
+  test('本人のGitHubアカウント(github.com/motoki418)を誤検知しない', () => {
+    // github.io を弾く正規表現が github.com まで巻き込むと、正常な sameAs を消す方向の
+    // 「修正」を誘発する。実在する正常値で、検査が誤検知しないことを固定する。
+    const content = readFileSync(resolve(process.cwd(), 'index.html'), 'utf-8');
+    expect(content, 'sameAs から本人のGitHubが消えている').toContain('https://github.com/motoki418');
+    for (const { pattern } of DEAD_HOSTS) {
+      expect(
+        'https://github.com/motoki418'.match(pattern),
+        `正常な本人アカウントが ${pattern} に誤検知されている`
+      ).toBeNull();
+    }
+  });
+});
