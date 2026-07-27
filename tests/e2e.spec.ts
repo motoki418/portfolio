@@ -1,4 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { resolve } from 'node:path';
+import {
+  inspectPdf,
+  rawUris,
+  linkAnnotationCount,
+  fingerprintOf,
+} from '../scripts/inspect-checklist-pdf.mjs';
 
 /**
  * 主要導線の機能E2E（OS非依存・CIで毎回回す確実な回帰ネット）。
@@ -306,5 +315,208 @@ test.describe('公開している主張の一貫性ガード', () => {
 
     const optOut = page.locator('a[href="https://tools.google.com/dlpage/gaoptout"]');
     await expect(optOut, 'オプトアウトアドオンへのリンクが無い').toHaveCount(1);
+  });
+});
+
+/**
+ * 配布PDFと生成元HTMLのドリフト検知。
+ *
+ * 配布PDFは2026-04-28に手動のChrome印刷で作られたきり3ヶ月更新されず、その間にHTML側だけが
+ * 改訂された。結果、公開PDFに旧表記「30分無料相談」と、既に404になった旧URL
+ * （motoki418.github.io/portfolio）が残ったまま配布され続けた。2026-07-26 に
+ * scripts/build-checklist-pdf.mjs を新設して現物は直したが、スクリプトを誰も呼ばなければ
+ * 次にHTMLを編集した時点で同じ状態に戻る。ここで「HTMLを編集したのにPDFを再生成していない」
+ * を必ず落ちる形にして閉じる。
+ *
+ * PDFのバイナリ同士を比較する案は採らない。PDFには生成日時が埋め込まれ、内容が同じでも
+ * バイト差分が出るため常時赤になる。代わりに2つの決定論的な記録を突き合わせる:
+ *   sourceSha256   … 生成元HTMLの内容ハッシュ。「HTMLだけ編集してPDF未再生成」を捕まえる。
+ *   pdfFingerprint … PDFから読み取れた本文とリンクの指紋。HTMLハッシュだけだと
+ *                    「スクリプトを通さず手動印刷でPDFを差し替えた」「記録だけ更新して
+ *                    PDFを入れ忘れた」が素通りする（＝この経緯そのものの再発）ため、
+ *                    PDF実体の側からも縛る。抽出器が劣化した場合もここで落ちる。
+ */
+test.describe('配布PDF — 生成元HTMLとのドリフト検知', () => {
+  // npm run test:e2e も CI の step もリポジトリ直下から起動する
+  const root = process.cwd();
+  const sourceHtml = resolve(root, 'downloads/ai-readiness-checklist.html');
+  const pdf = resolve(root, 'downloads/ai-readiness-checklist.pdf');
+  const manifestPath = resolve(root, 'scripts/checklist-pdf.manifest.json');
+  const REBUILD = 'node scripts/build-checklist-pdf.mjs';
+
+  test('配布PDFが最新のHTMLから生成されている（手動印刷時代のドリフト再発ガード）', () => {
+    expect(existsSync(pdf), `配布PDFが存在しない。再生成する: ${REBUILD}`).toBe(true);
+
+    // 空ファイル・書き込み途中で壊れたPDFを弾く。ハッシュ一致は「スクリプトを走らせた」ことしか
+    // 保証せず、成果物そのものの健全性は見ないため、下限サイズを別の観測量として持つ。
+    // 現物は約770KB（フォント埋め込み込み）。
+    const bytes = statSync(pdf).size;
+    expect(bytes, `配布PDFが小さすぎる（${bytes} bytes）。壊れている可能性がある。再生成する: ${REBUILD}`)
+      .toBeGreaterThan(100 * 1024);
+
+    expect(existsSync(manifestPath), `PDFの生成記録が無い。手で作らず再生成する: ${REBUILD}`).toBe(true);
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+
+    expect(
+      createHash('sha256').update(readFileSync(sourceHtml)).digest('hex'),
+      [
+        'downloads/ai-readiness-checklist.html が、配布PDFを生成した時点の内容と違う。',
+        'HTMLだけを編集してPDFを取り残した状態（公開物に旧表記・死んだURLが残る事故の再発）。',
+        `復旧手順: ${REBUILD} を実行し、生成された downloads/ai-readiness-checklist.pdf と`,
+        'scripts/checklist-pdf.manifest.json の両方をコミットする。',
+        '（記録ファイルを手で書き換えて通すのは検査の無効化なので禁止）',
+      ].join('\n')
+    ).toBe(manifest.sourceSha256);
+
+    expect(
+      fingerprintOf(inspectPdf(readFileSync(pdf))),
+      [
+        '配布PDFの中身が、記録された生成時の中身と違う。次のいずれかが起きている:',
+        '  - スクリプトを通さず手動印刷などでPDFを差し替えた（この資料が3ヶ月腐った経緯そのもの）',
+        '  - 記録ファイルだけ更新して、再生成したPDFをコミットし忘れた',
+        '  - PDF読み取り側（scripts/inspect-checklist-pdf.mjs）が壊れて中身を読めなくなった',
+        `復旧手順: ${REBUILD} を実行し、PDFと manifest の両方をコミットする。`,
+        '読み取り側を疑うときは node scripts/verify-pdf-inspector.mjs で切り分ける。',
+      ].join('\n')
+    ).toBe(manifest.pdfFingerprint);
+  });
+});
+
+/**
+ * 配布PDFの中身（リンク先・表示テキスト）の検査。
+ *
+ * ハッシュ照合は「PDFがHTMLより古い」しか捕まえない。旧PDFの実害はそれとは別軸だった:
+ *  - p4: 表示テキストは https://motoki418.github.io/portfolio/#hero（404）なのに、リンク注釈の
+ *    実際の飛び先は https://ai-advisory-hokkaido.pages.dev/#hero（DNSごと消滅）。
+ *    クリック先は目視校正では原理的に見えないため、3ヶ月そのまま配布された。
+ *  - p1: フッターの motoki418.github.io/portfolio はリンク注釈を持たないベタテキスト。
+ *    文書全体でリンク注釈は1個しか無く、注釈の列挙だけでは原理的に検出できなかった。
+ *
+ * よって3本立てで見る（1本でも欠けると上のどちらかを取りこぼす）。
+ * 検査は node:zlib だけで完結する scripts/inspect-checklist-pdf.mjs で行う。CI(ubuntu-latest)に
+ * PDFライブラリを入れずに必ず走らせるためで、ローカルの PyMuPDF は
+ * scripts/verify-pdf-inspector.mjs での照合（正解データ）にのみ使う。
+ */
+test.describe('配布PDF — リンク先と表示テキストの検査', () => {
+  const pdfPath = resolve(process.cwd(), 'downloads/ai-readiness-checklist.pdf');
+
+  // 正規のURL。ここ以外へのリンクを増やすときは、意図的な追加としてこの配列を編集する
+  // （検査を消すのではなく、許可先を明示的に足す）。
+  const ALLOWED_ORIGINS = ['https://katachi-ai.com/'];
+
+  // 過去に公開物へ残っていた死んだホストと、正規でない自社ホスト。
+  // スキーム無しのベタ書き（motoki418.github.io/portfolio には https:// が付いていなかった）でも
+  // 必ず当たるよう、`https?://` を前提にしない。
+  // github.io / pages.dev は広めに取ってある。この配布物は katachi-ai.com 以外を指す理由が無いため、
+  // 第三者のホスティングURLが紛れ込むこと自体を異常として扱う。将来それを正当に引用する必要が出たら、
+  // この正規表現を緩めるのではなく、その1件だけを許可する形で明示的に足すこと（検査の無効化を避ける）。
+  const DEAD_HOST_PATTERN = /motoki418|github\.io|pages\.dev|ai-advisory|katachi-ai\.jp|www\.katachi-ai\.com/i;
+
+  const isUrlShaped = (text: string) => /:\/\//.test(text) || /[a-z0-9-]+(\.[a-z0-9-]+)+\/\S/i.test(text);
+  const normalizeUrl = (url: string) => url.trim().replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+
+  // 抽出器が静かに壊れて空を返すと、以下3本は「見るものが無いので緑」になり、合格と未実行の
+  // 区別がつかなくなる。実際、初版のカナリアには次の3つの穴があった（レビューで実測）:
+  //   - 注釈URIの突き合わせを rawUris() と inspectPdf() で行っていたが、両者は同じ /URI 正規表現に
+  //     依存しており、URIの書き方が想定外だと揃って空になり [] === [] で通った
+  //   - 表示テキストが空でも検査2は「URLの形をしていない」として continue するだけで通った
+  //   - 既知文字列の検査が文書全体の連結テキスト相手だったため、p2/p3 が丸ごと空でも通った
+  // よって以下は「中身の正しさ」ではなく「抽出器が生きていること」を独立した観測量で先に要求する。
+  const load = () => {
+    const buf = readFileSync(pdfPath);
+    const result = inspectPdf(buf);
+    const DIAGNOSE = 'node scripts/verify-pdf-inspector.mjs で抽出器の生死を切り分ける。';
+
+    expect(
+      result.pageCount,
+      `PDFのページ数が想定と違う。抽出器が壊れた可能性が高い（${DIAGNOSE}）\n` +
+        '資料を増減してページ数が本当に変わったのなら、この期待値の更新が正しい直し方。'
+    ).toBe(4);
+
+    // 床1: ページごとに本文が読めていること。全体の連結で見ると、空のページが他ページの
+    // 文字数に隠れて素通りする（検査3はページ単位で回るため、空ページは無検査になる）。
+    // 現物は p1:221 / p2:407 / p3:327 / p4:252 文字。
+    for (const { page, text } of result.pages) {
+      expect(text.length, `p${page} の本文が読めていない（${text.length}文字）。${DIAGNOSE}`).toBeGreaterThan(
+        100
+      );
+    }
+
+    // 床2: リンク注釈が拾えていること。件数は /URI とは無関係な /Subtype /Link から数えるので、
+    // URIの書き方が想定外で inspectPdf と rawUris が揃って空になっても、ここで捕まる。
+    const annotCount = linkAnnotationCount(buf);
+    expect(annotCount, `PDFにリンク注釈が1つも無い。${DIAGNOSE}`).toBeGreaterThan(0);
+    expect(
+      result.links.length,
+      `リンク注釈は${annotCount}個あるのに、URIを解析できたのは${result.links.length}個。\n` +
+        `URIの書かれ方が想定外（hex文字列・エスケープ・間接参照）の可能性がある。${DIAGNOSE}`
+    ).toBe(annotCount);
+    expect(result.links.map((l) => l.uri).sort(), '生バイト列から見える /URI と解析結果が食い違う').toEqual(
+      rawUris(buf).sort()
+    );
+
+    // 床3: 各リンクの矩形内テキストが取れていること。空だと検査2が「URLの形をしていない」として
+    // 素通りし、表示とクリック先の食い違い（今回の事故そのもの）を検出できなくなる。
+    for (const link of result.links) {
+      expect(
+        link.visible.trim().length,
+        `p${link.page} のリンク(${link.uri})の表示テキストが取れていない。座標フィルタの破損が疑われる。${DIAGNOSE}`
+      ).toBeGreaterThan(0);
+    }
+
+    // ここから先は抽出器の生死ではなく「内容が想定どおりか」。古い版のPDFを掴んでいる場合もここで落ちる。
+    for (const marker of ['katachi-ai.com', 'AI導入チェックリスト', '中村元揮']) {
+      expect(
+        result.text,
+        `PDFに既知の文字列「${marker}」が無い。抽出器は動いているので、PDFの中身が想定と違う（古い版の可能性）。`
+      ).toContain(marker);
+    }
+
+    return result;
+  };
+
+  test('1) リンク注釈の飛び先が正規URLだけを指す（消滅した旧ドメインの再流入ガード）', () => {
+    const { links } = load();
+
+    for (const link of links) {
+      expect(
+        DEAD_HOST_PATTERN.test(link.uri),
+        `p${link.page} のリンクが死んだ旧ドメインを指している: ${link.uri}`
+      ).toBe(false);
+
+      expect(
+        ALLOWED_ORIGINS.some((origin) => link.uri.startsWith(origin)),
+        `p${link.page} のリンクが正規URL(${ALLOWED_ORIGINS.join(' / ')})の外を指している: ${link.uri}\n` +
+          '外部サイトへのリンクを意図して増やしたのなら、この検査の ALLOWED_ORIGINS に\n' +
+          'その行き先を明示的に足すのが正しい直し方（検査ごと外すのは不可）。'
+      ).toBe(true);
+    }
+  });
+
+  test('2) リンク注釈の飛び先と、その矩形内の表示テキストが一致する（目視で見えない食い違いのガード）', () => {
+    const { links } = load();
+
+    for (const link of links) {
+      // 「詳しくはこちら」のようなラベルは対象外。URLの形で見せている箇所だけを対象にする。
+      if (!isUrlShaped(link.visible)) continue;
+
+      expect(
+        normalizeUrl(link.visible),
+        `p${link.page} で、紙面に見えているURLとクリック先が違う。読者は飛び先を目視で確認できない。\n` +
+          `  表示テキスト: ${link.visible}\n  実際の飛び先: ${link.uri}`
+      ).toBe(normalizeUrl(link.uri));
+    }
+  });
+
+  test('3) 本文テキストに死んだ旧ドメインが1文字も出てこない（リンクでないベタ書きも含む）', () => {
+    const { pages } = load();
+
+    for (const { page, text } of pages) {
+      const hit = DEAD_HOST_PATTERN.exec(text);
+      expect(
+        hit ? `p${page}: ${text.slice(Math.max(0, hit.index - 40), hit.index + 60)}` : null,
+        `p${page} の本文に死んだ旧ドメインが書かれている（リンク注釈を持たない表示だけのテキストも配布物では同じ実害）`
+      ).toBeNull();
+    }
   });
 });

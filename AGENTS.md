@@ -17,7 +17,7 @@
 
 - 本番URL: https://katachi-ai.com/ （正規URL。SNS・名刺・QR・メール署名など外部掲載はすべてこれに統一）
 - katachi-ai.jp / www.katachi-ai.jp はブランド保護用。Cloudflare の Redirect Rule で https://katachi-ai.com へ 301 リダイレクト（パス・クエリ保持）。.jp 側にコンテンツは置かない
-- 旧URL https://ai-advisory-hokkaido.pages.dev/ は移行前の Cloudflare Pages のデフォルトドメイン（残存。新規掲載には使わない）
+- 旧URL https://ai-advisory-hokkaido.pages.dev/ は移行前の Cloudflare Pages のデフォルトドメイン。**2026-07-27 時点で DNS ごと消滅（NXDOMAIN・接続不可）**。同じく旧ポートフォリオ https://motoki418.github.io/portfolio/ も 404。どちらも「残存しているから使わない」ではなく「参照した瞬間に壊れる」ものとして扱う（過去に配布PDFのリンク先がこの2つを指したまま3ヶ月公開された）
 - 配信: Cloudflare Workers（static assets）。設定は `wrangler.jsonc`。`main` への push を `.github/workflows/deploy.yml`（`wrangler deploy`）が拾って本番反映する。手動デプロイは `npx wrangler deploy`
 - ビルド: `wrangler deploy` が `wrangler.jsonc` の `build.command`（`sh scripts/build-cloudflare-pages.sh`）を自動実行して `dist/` を生成・アップロードする。出力先は `dist`
 - 自動デプロイの有効化に必要: リポジトリ Secrets に `CLOUDFLARE_API_TOKEN`（Workers Scripts:Edit 権限）。未設定の間 deploy.yml はスキップ動作（main は赤くならない）
