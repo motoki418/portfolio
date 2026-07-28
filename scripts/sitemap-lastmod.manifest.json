@@ -2,8 +2,8 @@
   "urls": {
     "https://katachi-ai.com/": {
       "file": "index.html",
-      "sha256": "faa9503460c093f76f5d593a38645917d4a570e7b2e4f73e20cf055b015275cb",
-      "lastmod": "2026-07-27"
+      "sha256": "b6eefe69a4f28ea847b84a7485d31a95b91c4897ab172178936a722cc02845e1",
+      "lastmod": "2026-07-28"
     },
     "https://katachi-ai.com/downloads/ai-readiness-checklist": {
       "file": "downloads/ai-readiness-checklist.html",
@@ -12,18 +12,18 @@
     },
     "https://katachi-ai.com/training/": {
       "file": "training/index.html",
-      "sha256": "19c48f66992ae2a188080f39ba641d0e594166b2f29d2971305337c083214c4a",
-      "lastmod": "2026-07-25"
+      "sha256": "e5055081c87e226532d1dddd125e59b2eeedcfd0d387bad7d756608e29f9b420",
+      "lastmod": "2026-07-28"
     },
     "https://katachi-ai.com/services/ai-workflow-automation/": {
       "file": "services/ai-workflow-automation/index.html",
-      "sha256": "f4ac821e8e2bb2982be8e67acf1f7390935d90b8aeddba6deea5cdc8686c03a3",
-      "lastmod": "2026-07-25"
+      "sha256": "b76643ced4832ebf81297008933bce7e7c760ce3bfbbf9e983d788a00b16a3f8",
+      "lastmod": "2026-07-28"
     },
     "https://katachi-ai.com/about/": {
       "file": "about/index.html",
-      "sha256": "ab1fafb8f328bd6220aa5f6f199e9865baf81df2d6a82eeaea43ce994daad6c1",
-      "lastmod": "2026-07-26"
+      "sha256": "0aa385566c667de4edf1fdc44843e642263f2c009ef070b778827cfd3a434e1d",
+      "lastmod": "2026-07-28"
     }
   }
 }
