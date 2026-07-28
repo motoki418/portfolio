@@ -54,6 +54,18 @@ function today() {
  */
 function gitLastModified(file) {
   try {
+    // 未コミットの変更があるファイルにコミット日を使ってはいけない。git が知っているのは
+    // 最後にコミットされた時点までで、作業ツリー上の変更は見えない。そのまま刻印すると、
+    // 実際に中身を変えたのに「その変更より前の日付」を Google へ申告したうえ、
+    // 現在のハッシュが古い日付と組で記録されて検査が緑で固定される
+    // （＝この検査が捕まえるべき状態そのものを、記録を作り直す操作で作れてしまう）。
+    // 作業ツリーが汚れているファイルは日付を起こさず、呼び出し側で実行日へ落とす。
+    const dirty = execFileSync('git', ['status', '--porcelain', '--', file], {
+      cwd: root,
+      encoding: 'utf-8',
+    }).trim();
+    if (dirty !== '') return null;
+
     const out = execFileSync('git', ['log', '-1', '--format=%cs', '--', file], {
       cwd: root,
       encoding: 'utf-8',
