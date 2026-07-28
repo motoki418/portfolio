@@ -1,0 +1,29 @@
+{
+  "urls": {
+    "https://katachi-ai.com/": {
+      "file": "index.html",
+      "sha256": "faa9503460c093f76f5d593a38645917d4a570e7b2e4f73e20cf055b015275cb",
+      "lastmod": "2026-07-27"
+    },
+    "https://katachi-ai.com/downloads/ai-readiness-checklist": {
+      "file": "downloads/ai-readiness-checklist.html",
+      "sha256": "6c3417a40a3879e7b13d4ac16581ab4161431451e3cebe6d8331d277ae55ed16",
+      "lastmod": "2026-07-27"
+    },
+    "https://katachi-ai.com/training/": {
+      "file": "training/index.html",
+      "sha256": "19c48f66992ae2a188080f39ba641d0e594166b2f29d2971305337c083214c4a",
+      "lastmod": "2026-07-25"
+    },
+    "https://katachi-ai.com/services/ai-workflow-automation/": {
+      "file": "services/ai-workflow-automation/index.html",
+      "sha256": "f4ac821e8e2bb2982be8e67acf1f7390935d90b8aeddba6deea5cdc8686c03a3",
+      "lastmod": "2026-07-25"
+    },
+    "https://katachi-ai.com/about/": {
+      "file": "about/index.html",
+      "sha256": "ab1fafb8f328bd6220aa5f6f199e9865baf81df2d6a82eeaea43ce994daad6c1",
+      "lastmod": "2026-07-26"
+    }
+  }
+}

@@ -8,6 +8,16 @@ import {
   linkAnnotationCount,
   fingerprintOf,
 } from '../scripts/inspect-checklist-pdf.mjs';
+import {
+  SITEMAP_SOURCES,
+  parseSitemap,
+  parseSitemapStrict,
+  canonicalOf,
+  hashOf,
+  DATE_PATTERN,
+} from '../scripts/inspect-sitemap.mjs';
+import { readdirSync } from 'node:fs';
+import { join, relative } from 'node:path';
 
 /**
  * 主要導線の機能E2E（OS非依存・CIで毎回回す確実な回帰ネット）。
@@ -603,6 +613,210 @@ test.describe('公開HTML — 死んだ旧ドメインの混入ガード', () =>
         'https://github.com/motoki418'.match(pattern),
         `正常な本人アカウントが ${pattern} に誤検知されている`
       ).toBeNull();
+    }
+  });
+});
+
+/**
+ * sitemap.xml の <lastmod> が実態から遅れていないことの検知。
+ *
+ * 経緯: 2026-07-28 に Search Console を実測したところ、sitemap 掲載5URLのうち
+ * インデックス登録済みはトップ1件だけで、残り4件は「検出 - インデックス未登録
+ * （前回のクロール: 該当なし）」だった。調査の過程で、<lastmod> が全5URLで実際の
+ * 更新日より最大18日古いことが判明した（index.html は 2026-07-27 に更新されているのに
+ * lastmod は 2026-07-09）。<lastmod> は Google がクロール予定を組むときのヒントなので、
+ * 古いまま放置することは「この URL は変わっていない」と申告し続けることを意味する。
+ *
+ * 日付は手で書く限り必ず腐る（配布PDFが3ヶ月腐ったのと同じ構造）。日付そのものの
+ * 正しさは機械では検証できないため、代わりに生成元HTMLの内容ハッシュを記録しておき、
+ * 「内容を変えたのに lastmod を据え置いた」経路を落とす。
+ *
+ * 2軸で見る（片方だけだと下記が素通りする）:
+ *   sha256   … HTMLを編集して scripts/build-sitemap-lastmod.mjs を流し忘れた
+ *   lastmod  … 記録だけ更新して sitemap.xml を取り残した／sitemap.xml を手で書き換えた
+ */
+test.describe('sitemap — lastmod のドリフト検知', () => {
+  const root = process.cwd();
+  const REBUILD = 'node scripts/build-sitemap-lastmod.mjs';
+  const manifestPath = resolve(root, 'scripts/sitemap-lastmod.manifest.json');
+
+  // parseSitemap は抽出0件で例外を投げる。ここで実体を持っておくことで、
+  // 以降の for ループが空集合に対して素通りする（＝空振りの緑）経路を先に潰す。
+  const entries = parseSitemap(readFileSync(resolve(root, 'sitemap.xml'), 'utf-8'));
+
+  test('sitemap のURL集合と検査対象の対応表が一致する（増えたURLが検査から漏れるのを防ぐ）', () => {
+    expect(entries.length, 'sitemap から URL を抽出できていない').toBeGreaterThan(0);
+    expect(
+      entries.map((e) => e.loc).sort(),
+      [
+        'sitemap.xml のURLと scripts/inspect-sitemap.mjs の SITEMAP_SOURCES が食い違う。',
+        'URLを増減したら対応表も更新すること。放置すると、足したURLだけ永久に検査されない。',
+      ].join('\n')
+    ).toEqual(SITEMAP_SOURCES.map((s) => s.loc).sort());
+  });
+
+  test('生成元HTMLの内容が、lastmod を記録した時点と一致する', () => {
+    expect(existsSync(manifestPath), `lastmod の記録が無い。手で作らず生成する: ${REBUILD}`).toBe(true);
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+    expect(Object.keys(manifest.urls ?? {}).length, `記録が空。生成し直す: ${REBUILD}`).toBe(
+      SITEMAP_SOURCES.length
+    );
+
+    for (const { loc, file } of SITEMAP_SOURCES) {
+      const content = readFileSync(resolve(root, file));
+      // 空ファイルを掴んでいると以下のハッシュ比較は無意味になるため、先に生死を見る。
+      expect(content.length, `${file} が空か極端に短い。読み取りに失敗している`).toBeGreaterThan(500);
+
+      expect(
+        hashOf(content),
+        [
+          `${file} の内容が、sitemap の lastmod を記録した時点と違う。`,
+          `つまり ${loc} は更新されているのに、sitemap.xml は古い日付を Google に申告し続けている。`,
+          `復旧手順: ${REBUILD} を実行し、sitemap.xml と scripts/sitemap-lastmod.manifest.json の両方をコミットする。`,
+          '（記録ファイルを手で書き換えて通すのは検査の無効化なので禁止）',
+        ].join('\n')
+      ).toBe(manifest.urls[loc].sha256);
+    }
+  });
+
+  test('sitemap.xml の lastmod が記録と一致し、書式が正しく、未来日でない', () => {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+    // 実行日はCIとローカルで異なる。未来日の検出だけが目的なので当日を上限にする。
+    const todayIso = new Date().toISOString().slice(0, 10);
+
+    for (const { loc } of SITEMAP_SOURCES) {
+      const actual = entries.find((e) => e.loc === loc)?.lastmod;
+      // not.toBeNull() は undefined を素通しする（loc が見つからず find が undefined を返した場合に
+      // 空振りの緑になる）。型と実在の両方を要求する形にしておく。
+      expect(actual, `${loc} の <lastmod> が取得できない`).toEqual(expect.any(String));
+      expect(actual, `${loc} の <lastmod> が YYYY-MM-DD 形式でない: ${actual}`).toMatch(DATE_PATTERN);
+
+      expect(
+        actual,
+        [
+          `sitemap.xml の ${loc} の lastmod が、記録された値と違う。`,
+          '記録だけ更新して sitemap.xml を取り残したか、sitemap.xml を手で書き換えている。',
+          `復旧手順: ${REBUILD} を実行し、両方をコミットする。`,
+        ].join('\n')
+      ).toBe(manifest.urls[loc].lastmod);
+
+      expect(
+        actual! <= todayIso,
+        `${loc} の lastmod が未来日（${actual}）。Google は未来日を無視するため意味を失う`
+      ).toBe(true);
+    }
+  });
+
+  /**
+   * 正規表現の読みと実XMLパーサの読みを突き合わせる。
+   *
+   * 上の検査は生テキストへの正規表現しか見ておらず、XML の意味論と食い違う。敵対的レビューで
+   * 実測された3経路（いずれも「検査は緑なのに Google への申告は壊れている」）をここで閉じる:
+   *   - <url> ブロックを <!-- --> で囲む → Google からは1URL消えるが正規表現は拾い続ける
+   *   - コメント化した <lastmod> を実物の前に置く → 正規表現は最初の一致＝コメント側を読む
+   *   - 整形式でないXML → Google は sitemap 全体を拒否するが正規表現は素通り
+   */
+  test('正規表現の読みが実XMLパーサの読みと一致する（コメント・重複タグ・整形式違反で欺けないこと）', () => {
+    const strict = parseSitemapStrict(resolve(root, 'sitemap.xml'));
+    expect(strict.length, '実XMLパーサで URL を抽出できていない').toBeGreaterThan(0);
+    expect(
+      strict.map((e: { loc: string; lastmod: string }) => `${e.loc} ${e.lastmod}`).sort(),
+      [
+        'sitemap.xml を実XMLパーサで読んだ結果が、検査側の正規表現の読みと食い違う。',
+        'XMLコメントで <url> を無効化した、<lastmod> を二重に書いた、などの可能性がある。',
+        'Google は実XMLパーサ側を読むため、この検査が緑でも申告内容は壊れている。',
+      ].join('\n')
+    ).toEqual(entries.map((e) => `${e.loc} ${e.lastmod}`).sort());
+  });
+
+  /**
+   * loc→file の対応表そのものを、対応表とは独立な情報源で裏取りする。
+   *
+   * 集合一致検査は loc 側しか見ていないため、file 側を取り違えても検知できない。しかも
+   * その状態で記録を再生成すると誤対応が記録側にも焼き込まれ、両者は永久に一致し続ける。
+   * 敵対的レビューが実測した: /about/ の file を index.html に変えて再生成すると、その後
+   * about/index.html を実際に編集しても検査は緑のままになる（＝このURLだけ検査が恒久的に無効化）。
+   * canonical は各HTMLが自分で名乗る正規URLであり、手書きの対応表とは独立しているため突合に使える。
+   */
+  test('対応表の配信元HTMLが、その loc を canonical として名乗っている', () => {
+    for (const { loc, file } of SITEMAP_SOURCES) {
+      expect(
+        canonicalOf(readFileSync(resolve(root, file), 'utf-8')),
+        [
+          `${loc} の配信元として ${file} が指定されているが、そのHTMLは別のURLを名乗っている。`,
+          '対応表の誤りで、このURLは lastmod のドリフト検査から永久に外れる。',
+        ].join('\n')
+      ).toBe(loc);
+    }
+  });
+
+  test('記録された配信元ファイルが対応表と一致する（誤対応が記録に焼き込まれていないこと）', () => {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8'));
+    for (const { loc, file } of SITEMAP_SOURCES) {
+      expect(
+        manifest.urls[loc].file,
+        `${loc} の記録された配信元が対応表と違う。誤った対応で記録が作られている`
+      ).toBe(file);
+    }
+  });
+
+  /**
+   * canonical の一意性。
+   *
+   * 上の canonical 突合は「このファイルが自分をそのURLだと名乗っている」ことしか保証せず、
+   * 「そのURLで実際に配信されるのがこのファイルである」ことは保証しない。同じ canonical を
+   * 名乗るファイルが複数あると、対応表がどちらを指しても突合が通る（既存ページを複製して
+   * canonical を貼り替え忘れる経路で発生する）。一意性を要求して塞ぐ。
+   */
+  test('canonical がリポジトリ内で一意（複製ページの貼り替え忘れで対応表を欺けないこと）', () => {
+    const SKIP = ['node_modules', 'dist', 'playwright-report', 'test-results', '.git', 'tests', 'scripts', 'plans', '.beads'];
+    const collect = (dir: string, out: string[] = []): string[] => {
+      for (const e of readdirSync(dir, { withFileTypes: true })) {
+        if (SKIP.includes(e.name)) continue;
+        const p = join(dir, e.name);
+        if (e.isDirectory()) collect(p, out);
+        else if (e.name.endsWith('.html')) out.push(relative(root, p));
+      }
+      return out;
+    };
+
+    const files = collect(root);
+    expect(files.length, '公開HTMLを1件も列挙できていない。読み取りに失敗している').toBeGreaterThan(0);
+
+    const owners = new Map<string, string[]>();
+    for (const f of files) {
+      const canonical = canonicalOf(readFileSync(resolve(root, f), 'utf-8'));
+      owners.set(canonical, [...(owners.get(canonical) ?? []), f]);
+    }
+    for (const [canonical, holders] of owners) {
+      expect(
+        holders,
+        [
+          `canonical ${canonical} を複数のファイルが名乗っている: ${holders.join(', ')}`,
+          '対応表がどちらを指しても突合が通るため、誤対応を検知できなくなる。',
+        ].join('\n')
+      ).toHaveLength(1);
+    }
+  });
+
+  /**
+   * sitemap に載せたURLの配信元が、公開ビルドのコピー対象に入っているか。
+   *
+   * 敵対的レビューが実測: sitemap と対応表の両方を正しく更新しても、
+   * scripts/build-cloudflare-pages.sh の cp 列挙を更新し忘れると dist に出ず、
+   * 本番で404を返すURLを sitemap で申告したまま検査は緑になる。
+   */
+  test('sitemap の各URLの配信元が、公開ビルドのコピー対象に入っている（404を申告しないこと）', () => {
+    const build = readFileSync(resolve(root, 'scripts/build-cloudflare-pages.sh'), 'utf-8');
+    const copied = new Set([...build.matchAll(/^cp(?:\s+-R)?\s+(\S+)\s/gm)].map((m) => m[1]));
+    expect(copied.size, 'ビルドスクリプトから cp 対象を抽出できていない。読み取り側が壊れている').toBeGreaterThan(0);
+
+    for (const { loc, file } of SITEMAP_SOURCES) {
+      const top = file.split('/')[0];
+      expect(
+        copied.has(top) || copied.has(file),
+        `${loc} の配信元 ${file} がビルドのコピー対象に無い。dist に出ないため sitemap が404を申告することになる`
+      ).toBe(true);
     }
   });
 });
