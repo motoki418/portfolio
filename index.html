@@ -1689,11 +1689,11 @@ section { padding: 104px 0; }
         <h1 class="hero-title reveal">毎週くり返す業務を、<br>まず1つから<span class="nowrap">減らす</span></h1>
         <p class="hero-sub reveal">札幌拠点のAI導入支援。従業員10〜50名規模の中小企業向けに、生成AI活用・設計・試作・定着まで本人が直接伴走します。</p>
         <div class="hero-actions reveal">
-          <a href="#contact" class="btn-primary">業務改善を相談する（無料）</a>
+          <a href="#contact" class="btn-primary">業務改善を相談する</a>
           <a href="#cases" class="btn-secondary">導入事例を見る</a>
         </div>
-        <p class="hero-note reveal">初回1時間無料相談 &nbsp;／&nbsp; 札幌・北海道を拠点に、オンラインでも全国対応</p>
-        <p class="hero-note reveal">相談後：優先して試す業務メモをお渡しします</p>
+        <p class="hero-note reveal">初回相談は1時間・費用はかかりません &nbsp;／&nbsp; 札幌・北海道を拠点に、オンラインでも全国対応</p>
+        <p class="hero-note reveal">相談では、有料支援が必要かどうかも含めて整理し、優先して試す業務メモをお渡しします</p>
       </div>
       <aside class="hero-stats reveal reveal-delay-1" aria-label="支援実績">
         <p class="hero-stats-label">実際の支援で出た成果</p>
@@ -1867,7 +1867,7 @@ section { padding: 104px 0; }
   <div class="container">
     <div class="text-center">
       <span class="section-label reveal">料金プラン</span>
-      <h2 class="section-title reveal">まず無料相談で、<br>必要な範囲を確認します</h2>
+      <h2 class="section-title reveal">まず初回相談で、<br>必要な範囲を確認します</h2>
     </div>
     <p class="section-lead text-center mx-auto reveal">初回相談は1時間無料です。支援の進め方に合わせて、3つの定額プランから選べます。どのプランも、受託開発と同じ品質の実装を月額の範囲でご提供します。</p>
     <div class="pricing-grid">
@@ -1907,10 +1907,10 @@ section { padding: 104px 0; }
         <p class="pricing-price">40万円（税別）</p>
       </div>
     </div>
-    <p class="pricing-roi reveal">例：週5時間かかっていた業務が30分になった事例では、毎週4.5時間・年間216時間（年48稼働週で換算）が、新しい案件や提案づくりに回せる時間として増えます。まず無料相談で、御社の対象業務を一緒に確認します。</p>
+    <p class="pricing-roi reveal">例：週5時間かかっていた業務が30分になった事例では、毎週4.5時間・年間216時間（年48稼働週で換算）が、新しい案件や提案づくりに回せる時間として増えます。まず初回相談で、御社の対象業務を一緒に確認します。</p>
     <p class="pricing-note reveal">まず試すなら1ヶ月支援、定着まで進めるなら集中伴走が向いています。月次プランの最低契約期間は3ヶ月です。AI活用は短期間では定着しにくいため、腰を据えて取り組める期間としています。実装枠を超える規模の開発（新規システム・アプリなど）は、受託開発として別途お見積りします（ご契約中の企業を優先して着手します）。</p>
     <div class="pricing-cta reveal">
-      <a href="#contact" class="btn-primary">まず無料相談で確認する</a>
+      <a href="#contact" class="btn-primary">まず初回相談で確認する</a>
     </div>
   </div>
 </section>
@@ -2332,7 +2332,7 @@ section { padding: 104px 0; }
   <div class="container">
     <div class="contact-inner">
       <h2 class="contact-headline reveal">まず1時間、<br>現状を聞かせてください</h2>
-      <p class="contact-sub reveal">まだ課題が言語化できていなくても大丈夫です。気になっている業務や、つくりたいものを1つ持ってきてください。</p>
+      <p class="contact-sub reveal">まだ課題が言語化できていなくても大丈夫です。初回相談は1時間・費用はかかりません。気になっている業務や、つくりたいものを1つ持ってきてください。</p>
       <ul class="contact-deliverables reveal">
         <li>優先して試す業務の整理（メモ共有）</li>
         <li>AIに任せる範囲と人が確認する範囲のたたき</li>
@@ -2369,7 +2369,7 @@ section { padding: 104px 0; }
           <label for="cf-message">気になっている業務 <span class="required-pill">必須</span></label>
           <textarea id="cf-message" name="message" placeholder="まだ整理できていなくても大丈夫です。問い合わせ対応、資料作成、社内確認など、気になっている業務やAIで試したいことを1つ書いてください。" required aria-required="true"></textarea>
         </div>
-        <button type="submit" class="contact-submit" id="contactSubmit">業務改善を相談する（無料）</button>
+        <button type="submit" class="contact-submit" id="contactSubmit">業務改善を相談する</button>
         <p class="contact-error" id="contactError" role="alert" hidden>送信に失敗しました。時間をおいて再度お試しください。</p>
         <p class="contact-policy">送信することで<a href="privacy" target="_blank" rel="noopener">プライバシーポリシー</a>に同意したものとみなします。</p>
       </form>
@@ -2429,7 +2429,7 @@ if (contactForm) {
       }
     } catch {
       contactSubmit.disabled = false;
-      contactSubmit.textContent = '業務改善を相談する（無料）';
+      contactSubmit.textContent = '業務改善を相談する';
       if (contactError) contactError.hidden = false;
       else alert('送信に失敗しました。時間をおいて再度お試しください。');
     }
