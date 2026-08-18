@@ -22,3 +22,23 @@ if command -v bd >/dev/null 2>&1; then
   if [ $_bd_exit -ne 0 ]; then exit $_bd_exit; fi
 fi
 # --- END BEADS INTEGRATION v1.0.4 ---
+
+# --- bd 索引の同期＋検証（段0/段3・bd マーカー外の user content）---
+# なぜ: `bd export` はリダイレクトを忘れると .beads/issues.jsonl を更新せず、続く commit も
+# 差分ゼロの no-op になってエラーが出ない（fail-silent）。2026-08 に life/home で3回連続で起き、
+# issue が gitignore された Dolt DB にしか無い状態を作った。
+# 段0 が索引を同期して git add し、段3 は「同期したのに DB と食い違う＝同期機構の故障」だけを止める。
+# 索引に触らない変更のコミットにも索引差分が同乗する（bd の受動索引の設計どおり）。
+# 本体: ~/.claude/scripts/bd-index-gate.sh / 決定論テスト: ~/.claude/evals/bd-index-check/
+# exit 規約: 0=同期して検証も通った / 1=止めるべき故障 / 3=同期できず飛ばした（必ず警告つき）
+_BD_GATE="$HOME/.claude/scripts/bd-index-gate.sh"
+if [ -x "$_BD_GATE" ]; then
+  "$_BD_GATE"
+  _bd_rc=$?
+  if [ "$_bd_rc" -eq 1 ]; then exit 1; fi
+  if [ "$_bd_rc" -ne 0 ]; then
+    echo "[pre-commit] ⚠️ 索引ドリフト検査を飛ばしました（理由: gate が exit ${_bd_rc}・上の警告を参照）"
+  fi
+else
+  echo "[pre-commit] ⚠️ 索引ドリフト検査を飛ばしました（理由: bd-index-gate.sh が無い/実行不可 ($_BD_GATE)）"
+fi
