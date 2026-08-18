@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# bd 索引同期の迂回（--no-verify・hook 未配線）を記録する。記録専用で commit は止めない。
+# hook 型のガードは --no-verify で外せる＝構造的に塞げない。塞げないなら見えるようにする。
+# 本体: ~/.claude/scripts/bd-index-postcommit.sh
+# ログ: ~/.claude/logs/bd-index-bypass.log（1行1レコード・fleet-audit から読める形）
+_BD_POST="$HOME/.claude/scripts/bd-index-postcommit.sh"
+if [ -x "$_BD_POST" ]; then
+  "$_BD_POST" || true
+fi
+exit 0
